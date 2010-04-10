@@ -1,0 +1,19 @@
+i can put together a concrete proposal of the idea over the next weeks, if you like. my schedule is quite full, when would you like to receive it?
+
+
+in the meantime here's a rough outline of the concept. it's quite a minimalist kind of concept i think. i usually work starting from the experience i want the audience to have, backward to the concept (with help from other people). 
+
+so, i'm interested in working with a few single tiny coloured lightsources in a blacked-out space, pulsing and connected in some way to a soundtrack. for example a totally blacked-out room with a red LED light on one side and a green LED light on the other, where both of the lights stay black almost all of the time, but there is a soundtrack of bleeps/pulses and for each bleep there is a flash (like a strobe pulse) from one or both of the lights, as though the light and the sound are the same thing. red, green, redgreen, ... red, red, red, greeeeeeeeeeeen, redgreen, red, green, redgreen. http://tinyurl.com/kojkma , http://www.youtube.com/watch?v=bStImP-ivsM , 
+
+i want it to seem as though the two lights/sounds are two creatures or intelligences talking to each other and communicating something - i want to try and create a sense as though there is some intelligence or personality behind each light source and they are sharing information by pulses of light and sound. 
+
+when i described this to my friend (who has a very nice art education) she talked about communication, the Atlantic telegraph cable laid in the 1800s, morse code, and telegraphic contact over vast distances by pulses of electricity. 
+
+
+for the residency i think what could work for me would be the creation of a long series of tests/studies using different light sources, different pulse patterns, and different configurations. i could imagine spending 2 or 3 days building up each pattern, making some nice video documentation of it, and then starting again with a new one. the best study constructed each week could be exhibited over the weekend in the Kiberpipa space. the overall outcome of the residency would be the best single version of the work which i would construct for the HAIP festival. 
+
+i already have built some of the controllable led light sources that i would need, they're sitting in a box here :-) so in terms of equipment/facilities, i would need access to a space i could completely black out, a video camera that is able to capture good images in very low light, and a video editing workstation.
+
+there's also a possibility of connecting it to imagery. there's some people i know of in Portugal who built a shutter system that can block a beamer's lens mechanically, so that you can have a beamed image flash up on a wall for a half a second and then disappear into complete blackness. that would involve constructing a mechanical thing, and perhaps i would need some support from the Kiberpipa hacker/maker community.
+
+
