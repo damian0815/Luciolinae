@@ -60,10 +60,12 @@ static uint8_t firstGSInput;
 /** Interrupt called after an XLAT pulse to prevent more XLAT pulses. */
 ISR(TIMER1_OVF_vect)
 {
+	turnOffPin18();
     disable_XLAT_pulses();
     clear_XLAT_interrupt();
     tlc_needXLAT = 0;
     if (tlc_onUpdateFinished) {
+		// enable interrupts
         sei();
         tlc_onUpdateFinished();
     }
@@ -91,6 +93,7 @@ ISR(TIMER1_OVF_vect)
            value */
 void tlcClass_init(void)
 {
+	tlc_needXLAT=0;
     /* Pin Setup */
     XLAT_DDR |= _BV(XLAT_PIN);
     BLANK_DDR |= _BV(BLANK_PIN);
@@ -109,7 +112,7 @@ void tlcClass_init(void)
 
     //tlcClass_setAll(0);
 	for(int i=0; i<NUM_TLCS*24; i++)
-		tlc_GSData[i]=0;
+		tlc_GSData[i]=1024;
     tlcClass_update();
     disable_XLAT_pulses();
     clear_XLAT_interrupt();
@@ -120,14 +123,31 @@ void tlcClass_init(void)
     /* Timer Setup */
 
     /* Timer 1 - BLANK / XLAT */
+	// BLANK pin:
+	// clear OC1B on Compare Match
+	// set OC1B at BOTTOM 
     TCCR1A = _BV(COM1B1);  // non inverting, output on OC1B, BLANK
+	// turn on WGM13 -> phase/freq correct PWM, top set by ICR1
     TCCR1B = _BV(WGM13);   // Phase/freq correct PWM, ICR1 top
+
     OCR1A = 1;             // duty factor on OC1A, XLAT is inside BLANK
     OCR1B = 2;             // duty factor on BLANK (larger than OCR1A (XLAT))
     ICR1 = TLC_PWM_PERIOD; // see tlc_config.h
 
     /* Timer 2 - GSCLK */
-#ifdef TLC_ATMEGA_8_H
+
+#if defined ( TLC_ATTINY2313_H )
+    TCCR0A = _BV(COM0B1)      // set on BOTTOM, clear on OCR0A (non-inverting),
+                              // output on OC0B
+           | _BV(WGM01)       // Fast pwm with OCR0A top
+           | _BV(WGM00);      // Fast pwm with OCR0A top
+    TCCR0B = _BV(WGM02);      // Fast pwm with OCR0A top
+    OCR0B = 0;                // duty factor (as short a pulse as possible)
+    OCR0A = TLC_GSCLK_PERIOD; // see tlc_config.h
+    TCCR0B |= _BV(CS00);      // no prescale, (start pwm output)
+
+
+#elif defined ( TLC_ATMEGA_8_H ) 
     TCCR2  = _BV(COM20)       // set on BOTTOM, clear on OCR2A (non-inverting),
            | _BV(WGM21);      // output on OC2B, CTC mode with OCR2 top
     OCR2   = TLC_GSCLK_PERIOD / 2; // see tlc_config.h
@@ -181,6 +201,7 @@ uint8_t tlcClass_update(void)
         tlc_shift8(*p++);
         tlc_shift8(*p++);
     }
+	turnOnPin18();
     tlc_needXLAT = 1;
     enable_XLAT_pulses();
     set_XLAT_interrupt();

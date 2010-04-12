@@ -1,28 +1,28 @@
 MCU = attiny2313
 F_CPU = 8000000   	# 8 MHz
 #AVRDUDE_PORT = lpt1	# programmer connected to windows parallel
-AVRDUDE_PORT = com1	# programmer connected to serial
-AVRDUDE_PROGRAMMER = dasa
+AVRDUDE_PORT = /dev/tty.usbserial-A4001dI6	# programmer connected to serial
+AVRDUDE_PROGRAMMER = avrisp
 
 # Default target.
 all: 	begin gccversion \
-	minipov.hex all_leds.hex alt_leds.hex mypov.hex test_leds.hex \
-	largeimage.hex  makefair.hex makezine.hex eyebeam.hex digg.hex make.hex \
+	test_size.hex \
 	finished end
 
 # Program the device w/various programs
-program-minipov: minipov.hex
-program-all_leds: all_leds.hex
-program-test_leds: test_leds.hex
-program-alt_leds: alt_leds.hex
-program-mypov: mypov.hex
-program-test_sensor: test_sensor.hex
-program-largeimage: largeimage.hex
-program-makefair: makefair.hex
-program-makezine: makezine.hex
-program-eyebeam: eyebeam.hex
-program-make: make.hex
-program-digg: digg.hex
+#program-minipov: minipov.hex
+#program-all_leds: all_leds.hex
+#program-test_leds: test_leds.hex
+#program-alt_leds: alt_leds.hex
+#program-mypov: mypov.hex
+#program-test_sensor: test_sensor.hex
+#program-largeimage: largeimage.hex
+#program-makefair: makefair.hex
+#program-makezine: makezine.hex
+#program-eyebeam: eyebeam.hex
+#program-make: make.hex
+#program-digg: digg.hex
+program-test_size: test_size.hex
 
 # this is necessary if you're burning the AVR for the first time...
 # sets the proper fuse for 8MHz internal oscillator with no clk div
@@ -83,7 +83,7 @@ AVRDUDE = avrdude
 
 AVRDUDE_WRITE_FLASH = -U flash:w:
 
-AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS = -p $(MCU) -b 19200 -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
 
 # ---------------------------------------------------------------------------
 
@@ -124,10 +124,13 @@ MSG_CLEANING = Cleaning project:
 
 
 # Define all object files.
-OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) 
+OBJ = $(SRC:.c=.o) $(ASRC:.S=.o) $(SUPPORT)
 
 # Define all listing files.
-LST = $(ASRC:.S=.lst) $(SRC:.c=.lst)
+LST = $(ASRC:.S=.lst) $(SRC:.c=.lst) Tlc5940_purec/Tlc5940_purec.lst
+
+# Define all support files
+SUPPORT = Tlc5940_purec/Tlc5940_purec.o
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -164,13 +167,15 @@ gccversion :
 	@echo $(MSG_FLASH) $@
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
 
+
 # Link: create ELF output file from object files.
 .SECONDARY : $(TARGET).elf
 .PRECIOUS : $(OBJ)
-%.elf: %.o
+%.elf: %.o $(SUPPORT)
 	@echo
-	@echo $(MSG_LINKING) $@
-	$(CC) $(ALL_CFLAGS) $< --output $@ $(LDFLAGS)
+	@echo $(MSG_LINKING) $< to $@
+	$(CC) $(ALL_CFLAGS) $(SUPPORT) $< --output $@ $(LDFLAGS)
+	$(SIZE) $@
 
 
 # Compile: create object files from C source files.
@@ -206,6 +211,9 @@ clean_list :
 	$(REMOVE) *.obj
 	$(REMOVE) *.elf
 	$(REMOVE) *.o
+	$(REMOVE) Tlc5940_purec/*.o
+	$(REMOVE) Tlc5940_purec/*.elf
+	$(REMOVE) Tlc5940_purec/*.hex
 
 # Listing of phony targets.
 .PHONY : all begin finish end \

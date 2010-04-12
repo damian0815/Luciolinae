@@ -99,6 +99,11 @@
 /* Arduino Mega */
 #include "Arduino_Mega.h"
 
+/* Attiny2313 */
+#elif defined (__AVR_ATtiny2313__)
+
+#include "ATtiny2313.h"
+
 #else
 #error "Unknown Chip!"
 #endif

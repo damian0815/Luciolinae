@@ -25,28 +25,35 @@
 #include <stdint.h>
 #include "tlc_config.h"
 
-#ifdef TLC_ATMEGA_8_H
+
+#define turnOnPin17() {PORTB |= _BV(PB5);}
+#define turnOffPin17() {PORTB &= ~_BV(PB5);}
+#define turnOnPin18() {PORTB |= _BV(PB6);}
+#define turnOffPin18() {PORTB &= ~_BV(PB6);}
+
+#if defined(TLC_ATMEGA_8_H) || defined(TLC_ATTINY2313_H)
 
 /** Enables the Timer1 Overflow interrupt, which will fire after an XLAT
     pulse */
-#define set_XLAT_interrupt()    TIFR |= _BV(TOV1); TIMSK = _BV(TOIE1)
+#define set_XLAT_interrupt()    { TIFR |= _BV(TOV1); TIMSK |= _BV(TOIE1); }
 /** Disables any Timer1 interrupts */
-#define clear_XLAT_interrupt()  TIMSK = 0
+#define clear_XLAT_interrupt()  { TIMSK = 0; }
 
 #else
 
 /** Enables the Timer1 Overflow interrupt, which will fire after an XLAT
     pulse */
-#define set_XLAT_interrupt()    TIFR1 |= _BV(TOV1); TIMSK1 = _BV(TOIE1)
+#define set_XLAT_interrupt()    { TIFR1 |= _BV(TOV1); TIMSK1 = _BV(TOIE1);}
 /** Disables any Timer1 interrupts */
-#define clear_XLAT_interrupt()  TIMSK1 = 0
+#define clear_XLAT_interrupt()  { TIMSK1 = 0; }
 
 #endif
 
 /** Enables the output of XLAT pulses */
-#define enable_XLAT_pulses()    TCCR1A = _BV(COM1A1) | _BV(COM1B1)
+#define enable_XLAT_pulses()    { TCCR1A = _BV(COM1A1) | _BV(COM1B1); } 
+
 /** Disables the output of XLAT pulses */
-#define disable_XLAT_pulses()   TCCR1A = _BV(COM1B1)
+#define disable_XLAT_pulses()   { TCCR1A = _BV(COM1B1); }
 
 extern volatile uint8_t tlc_needXLAT;
 extern volatile void (*tlc_onUpdateFinished)(void);
