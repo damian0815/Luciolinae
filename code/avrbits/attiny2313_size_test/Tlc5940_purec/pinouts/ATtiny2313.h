@@ -26,7 +26,7 @@
 #endif
 
 /** \file
-    SPI and timer pins for the ATmega8.  Don't edit these.  All
+    SPI and timer pins for the ATtiny2313.  Don't edit these.  All
     changeable pins are defined in tlc_config.h */
 
 /** Pin 14 (OC0A/PCINT2) -> VPRG (TLC pin 27) */
@@ -40,23 +40,23 @@
 #define DEFAULT_XERR_DDR    DDRB
 #define DEFAULT_XERR_PINS   PINB
 
-/** Pin 7 (MISO/DO/PCINT6) -> SIN (TLC pin 26) */
-#define DEFAULT_BB_SIN_PIN      PD3
-#define DEFAULT_BB_SIN_PORT     PORTD
-#define DEFAULT_BB_SIN_DDR      DDRD
-/** Pin 8 (USCK/SCL/PCINT7) -> SCLK (TLC pin 25) */
-#define DEFAULT_BB_SCLK_PIN     PD4
-#define DEFAULT_BB_SCLK_PORT    PORTD
-#define DEFAULT_BB_SCLK_DDR     DDRD
+/** Pin 14 (OC0A/PCINT2) -> SCLK (TLC pin 25) */
+#define DEFAULT_BB_SCLK_PIN     PB2
+#define DEFAULT_BB_SCLK_PORT    PORTB
+#define DEFAULT_BB_SCLK_DDR     DDRB
+/** Pin 13 (AIN1/PCINT1) -> SIN (TLC pin 26) */
+#define DEFAULT_BB_SIN_PIN      PB1
+#define DEFAULT_BB_SIN_PORT     PORTB
+#define DEFAULT_BB_SIN_DDR      DDRB
 
-/** Pin 18 (MOSI/DI/SDA/PCINT5) -> SIN (TLC pin 26) */
-#define TLC_MOSI_PIN     PB6
-#define TLC_MOSI_PORT    PORTB
-#define TLC_MOSI_DDR     DDRB
 /** Pin 19 (USCK/SCL/PCINT7) -> SCLK (TLC pin 25) */
 #define TLC_SCK_PIN      PB7
 #define TLC_SCK_PORT     PORTB
 #define TLC_SCK_DDR      DDRB
+/** Pin 18 (MOSI/DI/SDA/PCINT5) -> SIN (TLC pin 26) */
+#define TLC_MOSI_PIN     PB6
+#define TLC_MOSI_PORT    PORTB
+#define TLC_MOSI_DDR     DDRB
 
 /** SS will be set to output as to not interfere with SPI master operation.
     If you have changed the pin-outs and the library doesn't seem to work

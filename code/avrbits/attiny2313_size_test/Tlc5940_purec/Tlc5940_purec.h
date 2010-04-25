@@ -69,7 +69,7 @@ extern uint8_t tlc_GSData[NUM_TLCS * 24];
     uint8_t tlcClass_update(void);
     void tlcClass_set(TLC_CHANNEL_TYPE channel, uint16_t value);
     uint16_t tlcClass_get(TLC_CHANNEL_TYPE channel);
-    //void tlcClass_setAll(uint16_t value);
+    void tlcClass_setAll(uint16_t value);
 #if VPRG_ENABLED
     void tlcClass_setAllDC(uint8_t value);
 #endif

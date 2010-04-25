@@ -110,10 +110,8 @@ void tlcClass_init(void)
 
     tlc_shift8_init();
 
-    //tlcClass_setAll(0);
-	for(int i=0; i<NUM_TLCS*24; i++)
-		tlc_GSData[i]=1024;
-    tlcClass_update();
+    tlcClass_setAll(0);
+	tlcClass_update();
     disable_XLAT_pulses();
     clear_XLAT_interrupt();
     tlc_needXLAT = 0;
@@ -169,10 +167,10 @@ void tlcClass_init(void)
 /** Clears the grayscale data array, #tlc_GSData, but does not shift in any
     data.  This call should be followed by update() if you are turning off
     all the outputs. */
-/*void tlcClass_clear(void)
+void tlcClass_clear(void)
 {
     tlcClass_setAll(0);
-}*/
+}
 
 /** Shifts in the data from the grayscale data array, #tlc_GSData.
     If data has already been shifted in this grayscale cycle, another call to
@@ -250,7 +248,7 @@ uint16_t tlcClass_get(TLC_CHANNEL_TYPE channel)
 
 /** Sets all channels to value.
     \param value grayscale value (0 - 4095) */
-/*void tlcClass_setAll(uint16_t value)
+void tlcClass_setAll(uint16_t value)
 {
     uint8_t firstByte = value >> 4;
     uint8_t secondByte = (value << 4) | (value >> 8);
@@ -260,7 +258,7 @@ uint16_t tlcClass_get(TLC_CHANNEL_TYPE channel)
         *p++ = secondByte;
         *p++ = (uint8_t)value;
     }
-}*/
+}
 
 #if VPRG_ENABLED
 

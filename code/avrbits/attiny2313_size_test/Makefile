@@ -23,6 +23,7 @@ all: 	begin gccversion \
 #program-make: make.hex
 #program-digg: digg.hex
 program-test_size: test_size.hex
+program-test_rs485: test_rs485.hex
 
 # this is necessary if you're burning the AVR for the first time...
 # sets the proper fuse for 8MHz internal oscillator with no clk div
@@ -131,6 +132,7 @@ LST = $(ASRC:.S=.lst) $(SRC:.c=.lst) Tlc5940_purec/Tlc5940_purec.lst
 
 # Define all support files
 SUPPORT = Tlc5940_purec/Tlc5940_purec.o
+SUPPORT_EXTRA_DEPENDS = $(wildcard Tlc5940_purec/*.h) $(wildcard Tlc5940_purec/pinouts/*.h)
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -171,7 +173,7 @@ gccversion :
 # Link: create ELF output file from object files.
 .SECONDARY : $(TARGET).elf
 .PRECIOUS : $(OBJ)
-%.elf: %.o $(SUPPORT)
+%.elf: %.o $(SUPPORT) $(SUPPORT_EXTRA_DEPENDS)
 	@echo
 	@echo $(MSG_LINKING) $< to $@
 	$(CC) $(ALL_CFLAGS) $(SUPPORT) $< --output $@ $(LDFLAGS)

@@ -14,17 +14,30 @@
 	}
 }*/
 
+
+ void waitForTxc()
+{
+	while ( ! (UCSRA & _BV(TXC)) )
+		;	
+}
+
+
 int main(void)
 {
 	int onOff = 1;
 
 	// pulsing pin for testage
-	DDRB |= _BV(PB5); 
-	DDRB |= _BV(PB6);
+	//DDRB |= _BV(PB5); 
+	//DDRB |= _BV(PB6);
 
 	// turn on interrupts globally
 	sei();
 	tlcClass_init();
+
+
+
+	// turn on TXC interrupt
+	//UCSRB |= _BV(TXCIE);
 	
 	int value1 = 0;
 	int value2 = 0;
