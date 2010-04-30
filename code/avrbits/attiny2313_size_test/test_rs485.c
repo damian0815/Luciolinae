@@ -15,6 +15,9 @@
 	}
 }*/
 
+#define DO_TLC_STUFF
+// #define DO_BLINK
+
 #define CLOCK_FREQUENCY (8*(10^6))
 
 inline void initUSART( int ubrr )
@@ -81,6 +84,7 @@ int main(void)
 	//  9600:   51
 	// 19200:   25
 	initUSART( 25 );
+	//initUSART( 19200 );
 
 	//int onOff = 1;
 
@@ -88,11 +92,13 @@ int main(void)
 	//DDRB |= _BV(PB5); 
 	//DDRB |= _BV(PB6);
 
+#ifdef DO_TLC_STUFF
 	// turn on interrupts globally
 	sei();
 	// init tlc
 	tlcClass_init();
 	tlcClass_setAll(0);
+#endif
 
 
 	// turn on TXC interrupt
@@ -105,13 +111,14 @@ int main(void)
 	PORTD &= ~_BV(PD4);
 	PORTD &= ~_BV(PD3);
 
-	// setup RS485 transmit enable pin
+	// setup RS484 transmit enable pin
 	RS485_TRANSMIT_ENABLE_DDR |= _BV(RS485_TRANSMIT_ENABLE_PIN);
+	// turn it off
 	RS485_TRANSMIT_ENABLE_PORT &= ~_BV(RS485_TRANSMIT_ENABLE_PIN);
 
 	int onOff = 0;
 	//count = 500;
-	int count = 0;	
+	unsigned long count = 0;	
 
 	while(1)
 	{
@@ -122,6 +129,7 @@ int main(void)
 			unsigned char data = USART_Receive();
 			if ( data == 0x01 /* led function */ )
 			{
+				//PORTD &= ~_BV(PD3);
 				// get next byte
 				data = USART_Receive();
 				if ( data == 0x0f )
@@ -141,32 +149,41 @@ int main(void)
 				}
 				else
 				{
-					// unknown
-				/*	PORTD |= _BV(PD3);
+			/*		// unknown
+					PORTD |= _BV(PD3);
 					PORTD |= _BV(PD4);
 					*/
 				}
+#ifdef DO_TLC_STUFF
 				tlcClass_setAll( data*16 );
 				while( tlcClass_update() )
 					;
+#endif
 			}
+		/*	else
+				PORTD |= _BV(PD3);*/
 		}
 
-	/*	
+#ifdef DO_BLINK	
 		// blink
-		count += 3;
-		if ( count > 500)
+		count += 1;
+		if ( count > 1000000)
 		{
 			onOff = !onOff;
 			count = 0;
 			if ( onOff )
+			{
 				PORTD |= _BV(PD4);
+			}
 			else
+			{
 				PORTD &= ~_BV(PD4);
+			}
 		}
+#endif
 
-		_delay_ms(3);
-	*/	
+		//_delay_ms(3);
+	
 	}
 
 }
