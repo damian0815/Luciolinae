@@ -20,8 +20,9 @@
 #define TLC_ATTINY2313_H
 
 #if DATA_TRANSFER_MODE == TLC_SPI
-#warning SPI cannot be used on the ATtiny2313 because I dont understand how
-#warning setting DATA_TRANSFER_MODE to TLC_BITBANG
+//#warning SPI cannot be used on the ATtiny2313 because I dont understand how
+//#warning setting DATA_TRANSFER_MODE to TLC_BITBANG
+#undef DATA_TRANSFER_MODE
 #define DATA_TRANSFER_MODE  TLC_BITBANG
 #endif
 
