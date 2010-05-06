@@ -9,6 +9,7 @@ static unsigned char RS485_TRANSMIT_ENABLE_PIN = 2;
 // message is 0x01 <led value>
 static unsigned char FUNC_LED_SETALL_8BIT = 0x01;
 static unsigned char FUNC_LED_SET = 0x02;
+static unsigned char FUNC_LED_PULSE = 0x03;
 
 // the buffer for messages
 unsigned char msg_buf[8];
@@ -17,13 +18,13 @@ void ledTestPattern()
 {
   // turn all off, on, off, 50%, off
   sendSetAll( 0 );
-  delay( 250 );
+  delay( 25 );
   sendSetAll( 255 );
-  delay( 250 );
+  delay( 25 );
   sendSetAll( 0 );
-  delay( 250 );
+  delay( 25 );
   sendSetAll( 63 );
-  delay( 250 );
+  delay( 25 );
   sendSetAll( 0 );
   
   // turn on individually 25, 50, 75, 100%
@@ -33,11 +34,11 @@ void ledTestPattern()
     for ( unsigned char j=0; j<8; j++ )
     {
       sendSet( i, level );
-      delay ( 50 );
+      delay ( 5 );
       level += 512;
     }
     sendSet( i, 0 );
-    delay( 50 );
+    delay( 5 );
   }
   
 }
@@ -82,6 +83,23 @@ void sendSet( unsigned char which, unsigned int level_16bit )
 }
 
 
+// pulse just one led
+void sendPulse( unsigned char which, unsigned int level_16bit )
+{
+  // function is: 0x02 (which<<4 | levelhi) levello 
+  // which says which LED,
+  // levelhi is the top 4 bits of the level
+  // levello is the bottom 8 bits of the level
+  unsigned char levelhi, levello;
+  levelhi = (level_16bit & 0x0f00) >> 8 ;
+  levello = (level_16bit & 0x00ff);
+  msg_buf[0] = FUNC_LED_PULSE;
+  msg_buf[1] = which<<4 | levelhi;
+  msg_buf[2] = levello;
+  sendBuffer( 3 );
+
+}
+
 volatile void waitForTxc() 
 {
   // wait for TXC 
@@ -101,27 +119,48 @@ void setup()
   pinMode( RS485_TRANSMIT_ENABLE_PIN, OUTPUT );
   digitalWrite( RS485_TRANSMIT_ENABLE_PIN, LOW );
 
-  Serial.begin(19200); 
+  Serial.begin(9600); 
   
   // run test pattern
   ledTestPattern();
+  
+  sendSetAll( 255 );
+  delay( 2000 );
+  sendSetAll( 0 );
 }
 
 
 void loop()
 {
+  
+  /*
+  for (unsigned char which=0; which < 16 ; which++ )
+  {
+    unsigned int level = 4095;
+    sendSet( which, level );
+    delay( 2000 );
+    sendSet( which, 0 );
+    delay( 5000 );
+  }*/
+  
   // pick a random led
   unsigned char which = random() % 0x0f;
   // pick a random level
-  unsigned int level = random() % 0x0fff;
-  // pick a random delay time in the range of 0-DELAY_MAX ms
-  // 100,000 microseconds max -> sqrt is 316
-  #define SQRT_DELAY_MAX 316
-  unsigned int pause = random() % SQRT_DELAY_MAX;
+  unsigned int level = random() % 0x0800 + 0x07ff;
   // go
   sendSet( which, level );
+  //sendSet( which, 4095 );
+  delay( 20 );
+  sendSet( which, 0 );
+
+  // pick a random delay time in the range of DELAY_MIN-DELAY_MAX ms
+  // 1,000, milliseconds max -> sqrt is 32
+  // 1 microseconds min -> sqrt is 1
+  #define SQRT_DELAY_MAX 32
+  #define SQRT_DELAY_MIN 1
+  unsigned int pause = random(SQRT_DELAY_MIN,SQRT_DELAY_MAX);
   // now wait
-  delayMicroseconds( pause*pause );
+  delay( pause*pause );
   
 }
 

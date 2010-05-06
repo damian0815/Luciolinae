@@ -72,7 +72,8 @@ int main(void)
 	//  2400:  207
 	//  9600:   51
 	// 19200:   25
-	initUSART( 25 );
+	//initUSART( 25 );
+	initUSART( 51 );
 	//initUSART( 1666 );
 
 	// turn on interrupts globally
@@ -131,6 +132,37 @@ int main(void)
 				level = 16*(which_levelhi & 0x0f) + levello;
 					
 				tlcClass_set( which, level );
+				while( tlcClass_update() )
+					;
+			}
+			else if ( command == 0x03 ) // pulse led function 
+			{
+				// function is: 0x03 (which<<4|levelhi) levello
+				// which says which LED,
+				// levelhi is the top 4 bits of the level
+				// levello is the bottom 8 bits of the level
+				unsigned char mask, which_levelhi, levello;
+				// results of unpacking
+				unsigned char which;
+				unsigned int level;
+				which_levelhi = USART_Receive();
+				levello = USART_Receive();
+			
+				// unpack which
+				which = (which_levelhi & 0xf0)>>4;
+				// unpack level
+				level = 16*(which_levelhi & 0x0f) + levello;
+				
+				// turn on
+				tlcClass_set( which, level );
+				while( tlcClass_update() )
+					;
+				
+				// delay
+				_delay_ms( 20 );
+
+				// turn off 
+				tlcClass_set( which, 0 );
 				while( tlcClass_update() )
 					;
 			}
