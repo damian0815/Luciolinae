@@ -40,6 +40,7 @@ void ledTestPattern()
     sendSet( i, 0 );
     delay( 5 );
   }
+  delay( 500 );
   
 }
 
@@ -129,6 +130,7 @@ void setup()
   sendSetAll( 0 );
 }
 
+unsigned char which = 0;
 
 void loop()
 {
@@ -144,23 +146,28 @@ void loop()
   }*/
   
   // pick a random led
-  unsigned char which = random() % 0x0f;
+  //unsigned char which = (random() % 0x0f);
+  which = ( which + 1 ) % 0x0f;
   // pick a random level
   unsigned int level = random() % 0x0800 + 0x07ff;
   // go
+  //sendSet( which, level );
+  if ( which == 0 | which == 8 )
+    level = 4095;
+  else
+    level = 0;
   sendSet( which, level );
-  //sendSet( which, 4095 );
   delay( 20 );
   sendSet( which, 0 );
 
   // pick a random delay time in the range of DELAY_MIN-DELAY_MAX ms
-  // 1,000, milliseconds max -> sqrt is 32
-  // 1 microseconds min -> sqrt is 1
+  // 1,000 milliseconds max -> sqrt is 32
+  // 100 milliseconds min -> sqrt is 10
   #define SQRT_DELAY_MAX 32
-  #define SQRT_DELAY_MIN 1
+  #define SQRT_DELAY_MIN 10
   unsigned int pause = random(SQRT_DELAY_MIN,SQRT_DELAY_MAX);
   // now wait
-  delay( pause*pause );
+  delay( 2*pause*pause );
   
 }
 

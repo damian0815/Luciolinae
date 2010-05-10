@@ -129,7 +129,7 @@ int main(void)
 				// unpack which
 				which = (which_levelhi & 0xf0)>>4;
 				// unpack level
-				level = 16*(which_levelhi & 0x0f) + levello;
+				level = (((unsigned int)(which_levelhi & 0x0f))<<8) + levello;
 					
 				tlcClass_set( which, level );
 				while( tlcClass_update() )
@@ -151,7 +151,7 @@ int main(void)
 				// unpack which
 				which = (which_levelhi & 0xf0)>>4;
 				// unpack level
-				level = 16*(which_levelhi & 0x0f) + levello;
+				level = (((unsigned int)(which_levelhi & 0x0f))<<8) + levello;
 				
 				// turn on
 				tlcClass_set( which, level );

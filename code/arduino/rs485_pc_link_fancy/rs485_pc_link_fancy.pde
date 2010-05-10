@@ -31,19 +31,21 @@ void rs485Write( byte* data, int count )
 
 void loop()
 {
-  // mirror USB serial in to rs485
-  while( Serial.available() > 1 )
+  // mirror USB serial in to rs485, in 8 byte chunks
+  if( Serial.available() > 7 )
   {
-    int count = Serial.available();
-    byte data[count+1];
+    int count = 8;
+    byte data[count];
     for ( int i=0; i<count; i++ )
     {
       data[i] = Serial.read();
       // echo back with a _ before (to show we sent it)
-      Serial.print( "_" );
-      Serial.print( (byte)data[i], HEX );
+      //Serial.print( "_" );
+      //Serial.print( (byte)data[i], HEX );
     }
     rs485Write( data, count );
+    // ack
+    Serial.print((byte)0x7f, BYTE );
   }
   // mirror rs485 serial out to USB
   while( rs485_serial.available() > 0 )
