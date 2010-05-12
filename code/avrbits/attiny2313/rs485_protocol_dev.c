@@ -2,18 +2,35 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#define RS485_TRANSMIT_ENABLE_PIN PA0
+#define RS485_TRANSMIT_ENABLE_PORT PORTA
+#define RS485_TRANSMIT_ENABLE_DDR DDRA
 
-// depends on clock freq: this is for 8MHz
-/*void delay_ms(long unsigned int ms)
-{
-	long unsigned int i;
-	while( ms != 0 ) 
-	{
-		for ( i=0;i <4200; i++ )
-			;
-		ms--;
-	}
-}*/
+// message addressing
+// a message is constructed as
+// <id|func> <data>...
+// id of 0 means all boards
+
+// functions
+// set all leds on all slaves to this brightness
+#define FUNC_SET_ALL 0x01
+#define FUNC_SET_ALL_NO_LATCH 0x07 // non-latching option
+// set single led on single slave to this brightness
+#define FUNC_SET_SINGLE 0x02
+#define FUNC_SET_SINGLE_NO_LATCH 0x08 // non-latching version
+// (NOT IN USE) pulse a single LED on a single slave
+#define FUNC_PULSE_SINGLE 0x03
+// latch data into the tlc
+#define FUNC_LATCH 0x04
+// set some values
+#define FUNC_SET_SOME 0x05
+// set every value
+#define FUNC_SET_EVERY 0x06
+
+// first byte in EEPROM contains id
+// valid board ids are: 0x10, 0x20, 0x30, .. 0xf0
+#define EEPROM_ID_ADDRESS 0x00
+
 
 inline void initUSART( int ubrr )
 {
@@ -60,12 +77,15 @@ unsigned char USART_Receive( void )
 }*/
 
 
-#define RS485_TRANSMIT_ENABLE_PIN PA0
-#define RS485_TRANSMIT_ENABLE_PORT PORTA
-#define RS485_TRANSMIT_ENABLE_DDR DDRA
-
 int main(void)
 {
+	unsigned char my_id;
+
+	// setup RS484 transmit enable pin
+	RS485_TRANSMIT_ENABLE_DDR |= _BV(RS485_TRANSMIT_ENABLE_PIN);
+	// turn it off
+	RS485_TRANSMIT_ENABLE_PORT &= ~_BV(RS485_TRANSMIT_ENABLE_PIN);
+
 	// ubrr value is CLOCK_FREQUENCY/(16*baud) - 1
 	// at 8MHz 1666 gives 300 baud
 	//   300: 1666
@@ -82,20 +102,16 @@ int main(void)
 	tlcClass_init();
 	tlcClass_setAll(0);
 
+	// read address from EEPROM	
+	/* Set up address register */ 
+	EEAR = EEPROM_ID_ADDRESS; 
+	/* Start eeprom read by writing EERE */ 
+	EECR |= (1<<EERE); 
+	/* Return data from data register */ 
+	my_id = EEDR;
+
 	// turn on TXC interrupt
 	//UCSRB |= _BV(TXCIE);
-
-	// turn on PD3,PD4 for output (pin 7,8)
-	DDRD |= _BV(PD4);
-	DDRD |= _BV(PD3);
-	// turn off the pins	
-	PORTD &= ~_BV(PD4);
-	PORTD &= ~_BV(PD3);
-
-	// setup RS484 transmit enable pin
-	RS485_TRANSMIT_ENABLE_DDR |= _BV(RS485_TRANSMIT_ENABLE_PIN);
-	// turn it off
-	RS485_TRANSMIT_ENABLE_PORT &= ~_BV(RS485_TRANSMIT_ENABLE_PIN);
 
 	while(1)
 	{
@@ -103,68 +119,133 @@ int main(void)
 		//
 		if ( USART_IsDataWaiting() )
 		{
-			unsigned char command = USART_Receive();
+			// get command and board id
+			unsigned char command_and_id = USART_Receive();
+			unsigned char which_levelhi, levello;
+			unsigned char latch = 1;
+			unsigned char count;
 			// RS485 protocol begins here
-			if ( command == 0x01 /* set all led's function (8-bit precision)*/ )
+			switch( command_and_id & 0x0f )
 			{
-				// function is: 0x01 (level as a byte)
-				unsigned char level_8bit = USART_Receive();
-				tlcClass_setAll( ((unsigned int)level_8bit)<<4 );
-				while( tlcClass_update() )
-					;
-			}
-			else if ( command == 0x02 /* set led function */ )
-			{
-				// function is: 0x02 (which<<4|levelhi) levello 
-				// which says which LED,
-				// levelhi is the top 4 bits of the level
-				// levello is the bottom 8 bits of the level
-				unsigned char mask, which_levelhi, levello;
-				// results of unpacking
-				unsigned char which;
-				unsigned int level;
-				which_levelhi = USART_Receive();
-				levello = USART_Receive();
-			
-				// unpack which
-				which = (which_levelhi & 0xf0)>>4;
-				// unpack level
-				level = (((unsigned int)(which_levelhi & 0x0f))<<8) + levello;
-					
-				tlcClass_set( which, level );
-				while( tlcClass_update() )
-					;
-			}
-			else if ( command == 0x03 ) // pulse led function 
-			{
-				// function is: 0x03 (which<<4|levelhi) levello
-				// which says which LED,
-				// levelhi is the top 4 bits of the level
-				// levello is the bottom 8 bits of the level
-				unsigned char mask, which_levelhi, levello;
-				// results of unpacking
-				unsigned char which;
-				unsigned int level;
-				which_levelhi = USART_Receive();
-				levello = USART_Receive();
-			
-				// unpack which
-				which = (which_levelhi & 0xf0)>>4;
-				// unpack level
-				level = (((unsigned int)(which_levelhi & 0x0f))<<8) + levello;
-				
-				// turn on
-				tlcClass_set( which, level );
-				while( tlcClass_update() )
-					;
-				
-				// delay
-				_delay_ms( 20 );
+				case FUNC_SET_ALL_NO_LATCH:
+					latch = 0;
+				case FUNC_SET_ALL: /* set all led's function (8-bit precision)*/ 
+					// function is: 0x01 (level,8bit precision) 
+					levello = USART_Receive();
 
-				// turn off 
-				tlcClass_set( which, 0 );
-				while( tlcClass_update() )
-					;
+					tlcClass_setAll( ((unsigned int)levello)<<4 );
+					// latch
+					if ( latch )
+						goto LATCH;
+					break;
+
+				case FUNC_SET_SINGLE_NO_LATCH:
+					latch = 0;
+				case FUNC_SET_SINGLE: /* set led function */ 
+					// function is: 0x02 (which<<4|levelhi) levello
+					// which says which LED,
+					// levelhi is the top 4 bits of the level
+					// levello is the bottom 8 bits of the level
+					// latch: 1 is instant, 0 is later
+					which_levelhi = USART_Receive();
+					levello = USART_Receive();
+
+					// not for me?
+					if ( (command_and_id&0xf0) /* not 0 == all */ && 
+							(command_and_id&0xf0) != my_id /* not me */ )
+						break;
+
+					// for me: go
+					tlcClass_set( /* unpack which */ (which_levelhi & 0xf0)>>4, 
+							/* unpack level */ (((unsigned int)(which_levelhi & 0x0f))<<8) + levello );
+					// latch?
+					if ( latch )
+						goto LATCH;
+					break;
+
+				case FUNC_SET_EVERY: /* set every led function */
+					// message is: FUNC_SET_EVERY (24 bytes packed data) latch
+					for ( int i=0; i<24; i++ )
+						// just read straight into GSData
+						tlc_GSData[i] = USART_Receive();
+					// latch?
+					latch = USART_Receive();
+					if ( latch )
+						goto LATCH;
+					break;
+
+				case FUNC_SET_SOME:
+					// message is: FUNC_SET_SOME count (count times [(which<<4|levelhi) levello]) latch
+					count = USART_Receive();
+					while( count > 0 )
+					{
+						// decrement counter
+						--count;
+
+						// fetch data
+						which_levelhi = USART_Receive();
+						levello = USART_Receive();
+
+						// not for me?
+						if ( (command_and_id&0xf0) /* not 0 == all */ && 
+								(command_and_id&0xf0) != my_id /* not me */ )
+							continue;
+
+						// for me: go
+						tlcClass_set( /* unpack which */ (which_levelhi & 0xf0)>>4, 
+								/* unpack level */ (((unsigned int)(which_levelhi & 0x0f))<<8) + levello );
+	
+					}
+
+					// latch?
+					latch = USART_Receive();
+					if ( latch )
+						goto LATCH;
+					break;
+	
+
+					/*
+				case FUNC_PULSE_SINGLE: // pulse led function 
+					// function is: 0x03 (which<<4|levelhi) levello
+					// which says which LED,
+					// levelhi is the top 4 bits of the level
+					// levello is the bottom 8 bits of the level
+					which_levelhi = USART_Receive();
+					levello = USART_Receive();
+
+					tlcClass_set( (which_levelhi & 0xf0)>>4, // unpack which
+							(((unsigned int)(which_levelhi & 0x0f))<<8) + levello ); // unpack level
+
+					// turn on
+					tlcClass_set( which, level );
+					while( tlcClass_update() )
+						;
+
+					// delay
+					_delay_ms( 20 );
+
+					// turn off 
+					tlcClass_set( which, 0 );
+					while( tlcClass_update() )
+						;
+
+					break;
+					*/
+
+					
+				case FUNC_LATCH: /* latch data into the TLC */
+					// skip if it's not fur me
+					if ( (command_and_id&0xf0) /* not 0 == all */ && 
+							(command_and_id&0xf0) != my_id /* not me */ )
+						break;
+LATCH:
+					// now latch
+					while( tlcClass_update() )
+						;
+					break;
+
+				default:
+					break;
 			}
 		}
 
