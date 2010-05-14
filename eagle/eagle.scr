@@ -1,0 +1,62 @@
+# Configuration Script
+#
+# This file can be used to configure the editor windows.
+
+assign m+x 'delete'; 
+assign m+m 'move';
+assign m+g 'group';
+assign m+c 'copy';   # eagle's weird single unit copy
+assign ms+c 'cut';   # actually, traditional copy with group selected
+assign ms+v 'paste'; # paste
+
+assign m+l 'window 1.5';  # zoom in * 1.5
+assign ms+l 'window 0.66'; # zoom out / 1.5
+assign ma+l 'window fit'; # fit zoom
+assign m+s 'window (@)'; # reposition window around cursor
+
+BRD:
+
+#Menu Add Change Copy Delete Display Grid Group Move Name Quit Rect \
+#     Route Script Show Signal Split Text Value Via Window ';'  Wire Write Edit;
+Change Width 0.032;
+Set WIRE_BEND 2; #Route with free angles
+Set Drill 0.02; #Make vias 0.02"
+Change Shape Round; #Make vias round
+
+assign m+r 'route';     # cmd-r       = route
+assign sm+r 'ripup';    # cmd-shift-r = ripup
+assign am+r 'ratsnest'; # alt-cmd-r   = ratsnest
+assign m+b split;
+
+SCH:
+
+Grid Default;
+Change Width 0.006;
+#Menu Add Bus Change Copy Delete Display Gateswap Grid Group Invoke Junction \
+#     Label Move Name Net Pinswap Quit Script Show Split Value Window ';' \
+#     Wire Write Edit;
+
+LBR:
+
+#Menu Close Export Open Script Write ';' Edit;
+
+DEV:
+
+Grid Default;
+#Menu Add Change Copy Connect Delete Display Export Grid Move Name Package \
+#     Prefix Quit Script Show Value Window ';' Write Edit;
+
+SYM:
+
+Grid Default On;
+Change Width 0.032;
+#Menu Arc Change Copy Cut Delete Display Export Grid Group Move Name Paste \
+#     Pin Quit Script Show Split Text Value Window ';' Wire Write Edit;
+
+PAC:
+
+Grid Default On;
+Change Width 0.005;
+Change Size 0.050;
+#Menu Add Change Copy Delete Display Grid Group Move Name Pad Quit \
+#     Script Show Smd Split Text Window ';' Wire Write Edit;
