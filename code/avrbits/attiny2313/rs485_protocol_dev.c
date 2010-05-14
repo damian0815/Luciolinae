@@ -76,6 +76,15 @@ unsigned char USART_Receive( void )
 		;	
 }*/
 
+unsigned long int millis_counter = 0;
+ISR(TIMER1_COMPA_vect)
+{
+	millis_counter++;
+}
+
+
+// decrement for pulse fadeout
+unsigned char decrement[16];
 
 int main(void)
 {
@@ -102,6 +111,18 @@ int main(void)
 	tlcClass_init();
 	tlcClass_setAll(0);
 
+	// turn on 'milliseconds' timer
+	// this will fire the interrupt (TIM1_COMPA_vect)
+	// twice for every BLANK: once at the start, and once at the end.
+	// since PWM runs at (F_OSC/(2*TLC_PWM_PERIOD) == 488Hz for the 
+	// default value of TLC_PWM_PERIOD of 8192, this means that a 
+	// timer increment in the TIMER1_COMPA interrupt should happen 
+	// about equivalent to once every .976ms, with some wonkiness,
+	// which is close enough.
+	TIMSK |= _BV(OCIE1A);
+	
+
+
 	// read address from EEPROM	
 	/* Set up address register */ 
 	EEAR = EEPROM_ID_ADDRESS; 
@@ -113,8 +134,30 @@ int main(void)
 	// turn on TXC interrupt
 	//UCSRB |= _BV(TXCIE);
 
+	unsigned long int prev_millis = millis_counter;
 	while(1)
 	{
+		unsigned long int now = millis_counter;
+		unsigned long int elapsed_millis;
+		if ( now < prev_millis )
+			// overflow
+			elapsed_millis = 1;
+		else
+			elapsed_millis = now-prev_millis;
+		prev_millis = now;	
+		// how much to decrement?
+		//unsigned int dec = elapsed_millis*6;
+		// decrement
+		elapsed_millis = elapsed_millis >> 1;
+		for ( int i=0; i<16; i++ )
+		{
+			unsigned int current_0 = tlcClass_get(i);
+			unsigned int dec = elapsed_millis*decrement[i];
+			current_0 -= (dec<current_0?dec:current_0);
+			tlcClass_set( i, current_0 );
+		}
+
+
 		// check for USART
 		//
 		if ( USART_IsDataWaiting() )
@@ -123,15 +166,22 @@ int main(void)
 			unsigned char command_and_id = USART_Receive();
 			unsigned char which_levelhi, levello;
 			unsigned char latch = 1;
+			unsigned char dec;
 			unsigned char count;
+			int not_for_me = !(((command_and_id&0xf0)==0) || ((command_and_id&0xf0)==my_id) ); 
 			// RS485 protocol begins here
 			switch( command_and_id & 0x0f )
 			{
 				case FUNC_SET_ALL_NO_LATCH:
 					latch = 0;
 				case FUNC_SET_ALL: /* set all led's function (8-bit precision)*/ 
-					// function is: 0x01 (level,8bit precision) 
+					// function is: (board_id|0x01) (level,8bit precision) 
 					levello = USART_Receive();
+
+					// my board?
+					if ( not_for_me )
+						// not me
+						break;
 
 					tlcClass_setAll( ((unsigned int)levello)<<4 );
 					// latch
@@ -142,7 +192,7 @@ int main(void)
 				case FUNC_SET_SINGLE_NO_LATCH:
 					latch = 0;
 				case FUNC_SET_SINGLE: /* set led function */ 
-					// function is: 0x02 (which<<4|levelhi) levello
+					// function is: (board_id|0x02) (which<<4|levelhi) levello
 					// which says which LED,
 					// levelhi is the top 4 bits of the level
 					// levello is the bottom 8 bits of the level
@@ -151,31 +201,37 @@ int main(void)
 					levello = USART_Receive();
 
 					// not for me?
-					if ( (command_and_id&0xf0) /* not 0 == all */ && 
-							(command_and_id&0xf0) != my_id /* not me */ )
+					if ( not_for_me )
 						break;
 
 					// for me: go
 					tlcClass_set( /* unpack which */ (which_levelhi & 0xf0)>>4, 
 							/* unpack level */ (((unsigned int)(which_levelhi & 0x0f))<<8) + levello );
+					decrement[(which_levelhi & 0xf0)>>4] = 0;
 					// latch?
 					if ( latch )
 						goto LATCH;
 					break;
 
 				case FUNC_SET_EVERY: /* set every led function */
-					// message is: FUNC_SET_EVERY (24 bytes packed data) latch
+					// message is: (board|FUNC_SET_EVERY) (24 bytes packed data) 
+					// does not latch
+					
+					// not for me?
 					for ( int i=0; i<24; i++ )
-						// just read straight into GSData
-						tlc_GSData[i] = USART_Receive();
-					// latch?
-					latch = USART_Receive();
-					if ( latch )
-						goto LATCH;
+					{
+						// only use the data if it's for me
+						unsigned char data = USART_Receive();
+						if ( !not_for_me )
+							tlc_GSData[i] = USART_Receive();
+					}
+				
 					break;
 
 				case FUNC_SET_SOME:
-					// message is: FUNC_SET_SOME count (count times [(which<<4|levelhi) levello]) latch
+					// message is: (board|FUNC_SET_SOME) count (count times [(which<<4|levelhi) levello]) 
+					// does not latch
+				
 					count = USART_Receive();
 					while( count > 0 )
 					{
@@ -187,8 +243,7 @@ int main(void)
 						levello = USART_Receive();
 
 						// not for me?
-						if ( (command_and_id&0xf0) /* not 0 == all */ && 
-								(command_and_id&0xf0) != my_id /* not me */ )
+						if ( not_for_me )
 							continue;
 
 						// for me: go
@@ -197,46 +252,31 @@ int main(void)
 	
 					}
 
-					// latch?
-					latch = USART_Receive();
-					if ( latch )
-						goto LATCH;
 					break;
 	
 
-					/*
+					
 				case FUNC_PULSE_SINGLE: // pulse led function 
-					// function is: 0x03 (which<<4|levelhi) levello
+					// function is: (FUNC_PULSE_SINGLE|board_id) (which<<4|levelhi) levello dec
 					// which says which LED,
 					// levelhi is the top 4 bits of the level
 					// levello is the bottom 8 bits of the level
+					// dec is the decrement speed
 					which_levelhi = USART_Receive();
 					levello = USART_Receive();
+					dec = USART_Receive();
 
+					if ( not_for_me )
+						break;
 					tlcClass_set( (which_levelhi & 0xf0)>>4, // unpack which
 							(((unsigned int)(which_levelhi & 0x0f))<<8) + levello ); // unpack level
-
-					// turn on
-					tlcClass_set( which, level );
-					while( tlcClass_update() )
-						;
-
-					// delay
-					_delay_ms( 20 );
-
-					// turn off 
-					tlcClass_set( which, 0 );
-					while( tlcClass_update() )
-						;
-
+					decrement[(which_levelhi & 0xf0)>>4] = dec;
 					break;
-					*/
 
 					
 				case FUNC_LATCH: /* latch data into the TLC */
 					// skip if it's not fur me
-					if ( (command_and_id&0xf0) /* not 0 == all */ && 
-							(command_and_id&0xf0) != my_id /* not me */ )
+					if ( not_for_me )
 						break;
 LATCH:
 					// now latch

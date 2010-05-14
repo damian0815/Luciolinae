@@ -60,7 +60,6 @@ static uint8_t firstGSInput;
 /** Interrupt called after an XLAT pulse to prevent more XLAT pulses. */
 ISR(TIMER1_OVF_vect)
 {
-	turnOffPin18();
     disable_XLAT_pulses();
     clear_XLAT_interrupt();
     tlc_needXLAT = 0;
@@ -121,6 +120,7 @@ void tlcClass_init(void)
     /* Timer Setup */
 
     /* Timer 1 - BLANK / XLAT */
+	// Timer 1 is 16-bit
 	// BLANK pin:
 	// clear OC1B on Compare Match
 	// set OC1B at BOTTOM 
@@ -135,6 +135,7 @@ void tlcClass_init(void)
     /* Timer 2 - GSCLK */
 
 #if defined ( TLC_ATTINY2313_H )
+	// Timer 0 is 8-bit
     TCCR0A = _BV(COM0B1)      // set on BOTTOM, clear on OCR0A (non-inverting),
                               // output on OC0B
            | _BV(WGM01)       // Fast pwm with OCR0A top
@@ -199,7 +200,6 @@ uint8_t tlcClass_update(void)
         tlc_shift8(*p++);
         tlc_shift8(*p++);
     }
-	turnOnPin18();
     tlc_needXLAT = 1;
     enable_XLAT_pulses();
     set_XLAT_interrupt();

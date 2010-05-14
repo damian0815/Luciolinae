@@ -26,18 +26,13 @@
 #include "tlc_config.h"
 
 
-#define turnOnPin17() {PORTB |= _BV(PB5);}
-#define turnOffPin17() {PORTB &= ~_BV(PB5);}
-#define turnOnPin18() {PORTB |= _BV(PB6);}
-#define turnOffPin18() {PORTB &= ~_BV(PB6);}
-
 #if defined(TLC_ATMEGA_8_H) || defined(TLC_ATTINY2313_H)
 
 /** Enables the Timer1 Overflow interrupt, which will fire after an XLAT
     pulse */
 #define set_XLAT_interrupt()    { TIFR |= _BV(TOV1); TIMSK |= _BV(TOIE1); }
 /** Disables any Timer1 interrupts */
-#define clear_XLAT_interrupt()  { TIMSK = 0; }
+#define clear_XLAT_interrupt()  { TIMSK &= ~_BV(TOIE1); }
 
 #else
 
@@ -49,7 +44,7 @@
 
 #endif
 
-/** Enables the output of XLAT pulses */
+/** Enables the output of XLAT pulses on the XLAT pin */
 #define enable_XLAT_pulses()    { TCCR1A = _BV(COM1A1) | _BV(COM1B1); } 
 
 /** Disables the output of XLAT pulses */
