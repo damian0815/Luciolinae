@@ -11,8 +11,6 @@ assign ms+v 'paste'; # paste
 
 assign m+l 'window 1.5';  # zoom in * 1.5
 assign ms+l 'window 0.66'; # zoom out / 1.5
-assign ma+l 'window fit'; # fit zoom
-assign m+s 'window (@)'; # reposition window around cursor
 
 BRD:
 

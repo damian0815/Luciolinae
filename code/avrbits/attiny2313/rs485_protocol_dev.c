@@ -18,7 +18,7 @@
 // set single led on single slave to this brightness
 #define FUNC_SET_SINGLE 0x02
 #define FUNC_SET_SINGLE_NO_LATCH 0x08 // non-latching version
-// (NOT IN USE) pulse a single LED on a single slave
+// pulse a single LED on a single slave
 #define FUNC_PULSE_SINGLE 0x03
 // latch data into the tlc
 #define FUNC_LATCH 0x04
@@ -148,13 +148,23 @@ int main(void)
 		// how much to decrement?
 		//unsigned int dec = elapsed_millis*6;
 		// decrement
-		elapsed_millis = elapsed_millis >> 1;
 		for ( int i=0; i<16; i++ )
 		{
-			unsigned int current_0 = tlcClass_get(i);
+			unsigned long int current = tlcClass_get(i);
+			// floating point math: current = current-current*elapsed*decay_pct
+			// this would mean that every second, current would lose decay_pct of its value
+			//
+			// fixed point math: current is *2^0, elapsed is *2^-10 (seconds), decay is *2^-4
+			// we have 32 bits of precision in an unsigned long int, so this is ok
+			unsigned long int next = current + current*elapsed*decay;
+			// shift to correct for signs
+			// -10+-4 = -14
+			next >>= 14; 
+/*
 			unsigned int dec = elapsed_millis*decrement[i];
 			current_0 -= (dec<current_0?dec:current_0);
-			tlcClass_set( i, current_0 );
+			*/
+			tlcClass_set( i, next );
 		}
 
 
