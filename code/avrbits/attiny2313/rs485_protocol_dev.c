@@ -101,8 +101,8 @@ int main(void)
 	//  2400:  207
 	//  9600:   51
 	// 19200:   25
-	//initUSART( 25 );
-	initUSART( 51 );
+	initUSART( 25 );
+	//initUSART( 51 );
 	//initUSART( 1666 );
 
 	// turn on interrupts globally
@@ -137,6 +137,7 @@ int main(void)
 	unsigned long int prev_millis = millis_counter;
 	while(1)
 	{
+		/*
 		unsigned long int now = millis_counter;
 		unsigned long int elapsed_millis;
 		if ( now < prev_millis )
@@ -160,12 +161,9 @@ int main(void)
 			// shift to correct for signs
 			// -10+-4 = -14
 			next >>= 14; 
-/*
-			unsigned int dec = elapsed_millis*decrement[i];
-			current_0 -= (dec<current_0?dec:current_0);
-			*/
 			tlcClass_set( i, next );
 		}
+	*/
 
 
 		// check for USART
@@ -228,12 +226,17 @@ int main(void)
 					// does not latch
 					
 					// not for me?
-					for ( int i=0; i<24; i++ )
+					for ( int i=0; i<8; i++ )
 					{
 						// only use the data if it's for me
-						unsigned char data = USART_Receive();
+						unsigned char data0 = USART_Receive();
+						unsigned char data1 = USART_Receive();
+						unsigned char data2 = USART_Receive();
 						if ( !not_for_me )
-							tlc_GSData[i] = USART_Receive();
+						{
+							tlcClass_set( i*2,   (((unsigned int)data0)<<4) | (unsigned int)((data1&0xf0)>>4) );
+							tlcClass_set( i*2+1, (((unsigned int)data1&0x0f)<<8) | (unsigned int)data2 );
+						}
 					}
 				
 					break;

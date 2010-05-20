@@ -1,2 +1,4 @@
 #!/bin/bash
+# usage: burn_eeprom 0x10 
+#  will program in board id 0x10
 avrdude -p attiny2313 -b 19200 -P /dev/tty.usbserial-A4001dI6 -c avrisp -U eeprom:w:$1:m
