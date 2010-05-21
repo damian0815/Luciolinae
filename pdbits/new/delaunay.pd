@@ -1,4 +1,4 @@
-#N canvas 47 22 588 724 10;
+#N canvas 140 22 588 724 10;
 #X obj 62 -10 r osc_delaunay;
 #X obj 62 20 routeOSC /ping;
 #X obj 62 52 unpack f f f;
