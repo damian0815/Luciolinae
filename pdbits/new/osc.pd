@@ -1,0 +1,14 @@
+#N canvas 696 162 459 356 10;
+#X obj 26 68 unpackOSC;
+#X floatatom 122 51 5 0 0 0 - - -;
+#X obj 26 192 s osc_blip;
+#X obj 26 20 udpreceive 10001;
+#X obj 89 225 s osc_delaunay;
+#X obj 26 154 routeOSC /blip /delaunay /breath;
+#X obj 152 191 s osc_breath;
+#X connect 0 0 5 0;
+#X connect 3 0 0 0;
+#X connect 3 1 1 0;
+#X connect 5 0 2 0;
+#X connect 5 1 4 0;
+#X connect 5 2 6 0;

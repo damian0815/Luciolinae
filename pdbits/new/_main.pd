@@ -1,0 +1,6 @@
+#N canvas 708 142 484 383 10;
+#X obj 22 35 osc;
+#X obj 27 103 blip;
+#X obj 24 173 sound;
+#X obj 74 103 delaunay;
+#X obj 147 108 background;
