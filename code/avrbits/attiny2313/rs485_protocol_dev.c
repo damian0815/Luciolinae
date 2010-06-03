@@ -27,6 +27,8 @@
 // set every value
 #define FUNC_SET_EVERY 0x06
 
+unsigned char msg_lengths[0x10] = { 0, 1, 2, 3, 0, /*complicated*/0, 24, 1, 2, /* dummy */0, 0, 0, 0, 0, 0, 0 };
+
 // first byte in EEPROM contains id
 // valid board ids are: 0x10, 0x20, 0x30, .. 0xf0
 #define EEPROM_ID_ADDRESS 0x00
@@ -83,8 +85,28 @@ ISR(TIMER1_COMPA_vect)
 }
 
 
-// decrement for pulse fadeout
-unsigned char decrement[16];
+unsigned char CRC8(unsigned char input, unsigned char seed)
+{
+    unsigned char i, feedback;
+
+    for (i=0; i<8; i++)
+    {
+        feedback = ((seed ^ input) & 0x01);
+        if (!feedback) seed >>= 1;
+        else
+        {
+            seed ^= 0x18;
+            seed >>= 1;
+            seed |= 0x80;
+        }
+        input >>= 1;
+    }
+
+    return seed;   
+}
+
+
+//unsigned char decrement[16];
 
 int main(void)
 {
@@ -176,15 +198,37 @@ int main(void)
 			unsigned char latch = 1;
 			unsigned char dec;
 			unsigned char count;
+			unsigned char msg_buffer[24];
+			unsigned char crc;
 			int not_for_me = !(((command_and_id&0xf0)==0) || ((command_and_id&0xf0)==my_id) ); 
 			// RS485 protocol begins here
-			switch( command_and_id & 0x0f )
+			unsigned char cmd = (command_and_id&0x0f);
+			
+			// fetch bytes, do CRC check
+			crc = 0;
+			crc = CRC8( command_and_id, crc );
+			int length = msg_lengths[cmd];
+			// fetch  ,upaditng crc 
+			for ( int i=0; i<length; i++ )
+			{
+				msg_buffer[i] = USART_Receive();
+				crc = CRC8( msg_buffer[i], crc );
+			}
+			// fetch crc and check
+			if ( USART_Receive() != crc )
+			{
+				//tlcClass_setAll( 1024 );
+				continue;
+			}
+
+			// go
+			switch( cmd )
 			{
 				case FUNC_SET_ALL_NO_LATCH:
 					latch = 0;
 				case FUNC_SET_ALL: /* set all led's function (8-bit precision)*/ 
 					// function is: (board_id|0x01) (level,8bit precision) 
-					levello = USART_Receive();
+					levello = msg_buffer[0];
 
 					// my board?
 					if ( not_for_me )
@@ -205,8 +249,8 @@ int main(void)
 					// levelhi is the top 4 bits of the level
 					// levello is the bottom 8 bits of the level
 					// latch: 1 is instant, 0 is later
-					which_levelhi = USART_Receive();
-					levello = USART_Receive();
+					which_levelhi = msg_buffer[0];
+					levello = msg_buffer[1];
 
 					// not for me?
 					if ( not_for_me )
@@ -215,7 +259,7 @@ int main(void)
 					// for me: go
 					tlcClass_set( /* unpack which */ (which_levelhi & 0xf0)>>4, 
 							/* unpack level */ (((unsigned int)(which_levelhi & 0x0f))<<8) + levello );
-					decrement[(which_levelhi & 0xf0)>>4] = 0;
+					//decrement[(which_levelhi & 0xf0)>>4] = 0;
 					// latch?
 					if ( latch )
 						goto LATCH;
@@ -229,9 +273,9 @@ int main(void)
 					for ( int i=0; i<8; i++ )
 					{
 						// only use the data if it's for me
-						unsigned char data0 = USART_Receive();
-						unsigned char data1 = USART_Receive();
-						unsigned char data2 = USART_Receive();
+						unsigned char data0 = msg_buffer[i*3];
+						unsigned char data1 = msg_buffer[i*3+1];
+						unsigned char data2 = msg_buffer[i*3+2];
 						if ( !not_for_me )
 						{
 							tlcClass_set( i*2,   (((unsigned int)data0)<<4) | (unsigned int)((data1&0xf0)>>4) );
@@ -245,15 +289,15 @@ int main(void)
 					// message is: (board|FUNC_SET_SOME) count (count times [(which<<4|levelhi) levello]) 
 					// does not latch
 				
-					count = USART_Receive();
+					count = msg_buffer[0];
 					while( count > 0 )
 					{
 						// decrement counter
 						--count;
 
 						// fetch data
-						which_levelhi = USART_Receive();
-						levello = USART_Receive();
+						which_levelhi = msg_buffer[0];
+						levello = msg_buffer[1];
 
 						// not for me?
 						if ( not_for_me )
@@ -275,15 +319,15 @@ int main(void)
 					// levelhi is the top 4 bits of the level
 					// levello is the bottom 8 bits of the level
 					// dec is the decrement speed
-					which_levelhi = USART_Receive();
-					levello = USART_Receive();
-					dec = USART_Receive();
+					which_levelhi = msg_buffer[0];
+					levello = msg_buffer[1];
+					dec = msg_buffer[2];
 
 					if ( not_for_me )
 						break;
 					tlcClass_set( (which_levelhi & 0xf0)>>4, // unpack which
 							(((unsigned int)(which_levelhi & 0x0f))<<8) + levello ); // unpack level
-					decrement[(which_levelhi & 0xf0)>>4] = dec;
+					//decrement[(which_levelhi & 0xf0)>>4] = dec;
 					break;
 
 					
