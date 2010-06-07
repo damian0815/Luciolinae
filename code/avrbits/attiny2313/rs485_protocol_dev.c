@@ -27,6 +27,8 @@
 // set every value
 #define FUNC_SET_EVERY 0x06
 
+#define DO_SAFETY_FADE
+
 unsigned char msg_lengths[0x10] = { 0, 1, 2, 3, 0, /*complicated*/0, 24, 1, 2, /* dummy */0, 0, 0, 0, 0, 0, 0 };
 
 // first byte in EEPROM contains id
@@ -159,7 +161,8 @@ int main(void)
 	unsigned long int prev_millis = millis_counter;
 	while(1)
 	{
-		/*
+		
+#ifdef DO_SAFETY_FADE
 		unsigned long int now = millis_counter;
 		unsigned long int elapsed_millis;
 		if ( now < prev_millis )
@@ -169,7 +172,7 @@ int main(void)
 			elapsed_millis = now-prev_millis;
 		prev_millis = now;	
 		// how much to decrement?
-		//unsigned int dec = elapsed_millis*6;
+		unsigned int dec = elapsed_millis*4;
 		// decrement
 		for ( int i=0; i<16; i++ )
 		{
@@ -179,13 +182,15 @@ int main(void)
 			//
 			// fixed point math: current is *2^0, elapsed is *2^-10 (seconds), decay is *2^-4
 			// we have 32 bits of precision in an unsigned long int, so this is ok
-			unsigned long int next = current + current*elapsed*decay;
+			unsigned long int this_dec = (current<dec?current:dec);
+			unsigned long int next = current - this_dec;
 			// shift to correct for signs
 			// -10+-4 = -14
-			next >>= 14; 
+			//next >>= 14; 
 			tlcClass_set( i, next );
 		}
-	*/
+#endif
+	
 
 
 		// check for USART
