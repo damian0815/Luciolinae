@@ -319,10 +319,10 @@ UsedLibrary="/Applications/EAGLE/lbr/zilog.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="340 198 1069 683"
+Loc="849 476 1578 961"
 State=2
 Number=0
 
 [Desktop]
-Screen="1280 800"
+Screen="1920 1172"
 Window="Win_1"

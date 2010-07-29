@@ -120,6 +120,11 @@ int main(void)
 	//count = 500;
 	unsigned long count = 0;	
 
+#ifdef DO_TLC_STUFF
+	unsigned char chunk[24];
+	int chunk_count = 0;
+#endif
+
 	while(1)
 	{
 		// check for USART
@@ -154,13 +159,29 @@ int main(void)
 					PORTD |= _BV(PD4);
 					*/
 				}
+			}
 #ifdef DO_TLC_STUFF
-				tlcClass_setAll( data*16 );
+			chunk[chunk_count++] = data;
+			if ( chunk_count >= 24 )
+			{
+				int i=0;
+				int which =0;
+				while ( i < 24 )
+				{
+					int bright;
+					bright = chunk[i++] << 4;
+					bright += ((chunk[i] & 0xf0) >> 4);
+					tlcClass_set( which++, bright );
+					bright = (chunk[i++] & 0x0f) << 8;
+					bright += chunk[i++];
+					tlcClass_set( which++, bright );
+				}
+				chunk_count = 0;
 				while( tlcClass_update() )
 					;
-#endif
 			}
-		/*	else
+#endif
+	/*	else
 				PORTD |= _BV(PD3);*/
 		}
 

@@ -28,6 +28,8 @@
 #define FUNC_SET_EVERY 0x06
 
 #define DO_SAFETY_FADE
+//#define DO_DEBUG
+//#define IGNORE_CRC_CHECK
 
 unsigned char msg_lengths[0x10] = { 0, 1, 2, 3, 0, /*complicated*/0, 24, 1, 2, /* dummy */0, 0, 0, 0, 0, 0, 0 };
 
@@ -189,6 +191,8 @@ int main(void)
 			//next >>= 14; 
 			tlcClass_set( i, next );
 		}
+		// latch
+		tlcClass_update();
 #endif
 	
 
@@ -219,12 +223,40 @@ int main(void)
 				msg_buffer[i] = USART_Receive();
 				crc = CRC8( msg_buffer[i], crc );
 			}
+#ifdef DO_DEBUG
+			if ( not_for_me )
+			{
+				tlcClass_set( 1, 0 );
+				while( tlcClass_update() )
+					;
+			}
+			else
+			{
+				tlcClass_set( 1, 256 );
+				while( tlcClass_update() )
+					;
+			}
+#endif
 			// fetch crc and check
 			if ( USART_Receive() != crc )
 			{
-				//tlcClass_setAll( 1024 );
+#ifdef DO_DEBUG
+				tlcClass_set( 0, 0 );
+				while (tlcClass_update() )
+					;
+#endif
+#ifndef IGNORE_CRC_CHECK
 				continue;
+#endif
 			}
+#ifdef DO_DEBUG
+			else
+			{
+				tlcClass_set( 0, 1024 );
+				while( tlcClass_update() )
+					;
+			}
+#endif
 
 			// go
 			switch( cmd )

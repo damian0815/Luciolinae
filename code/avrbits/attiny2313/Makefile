@@ -25,6 +25,7 @@ all: 	begin gccversion \
 program-test_size: test_size.hex
 program-test_rs485: test_rs485.hex
 program-rs485_protocol_dev: rs485_protocol_dev.hex
+program-test_leds: test_leds.hex
 
 # this is necessary if you're burning the AVR for the first time...
 # sets the proper fuse for 8MHz internal oscillator with no clk div
