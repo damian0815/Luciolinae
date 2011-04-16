@@ -27,7 +27,9 @@
 // set every value
 #define FUNC_SET_EVERY 0x06
 
-#define DO_SAFETY_FADE
+//#define DO_SAFETY_FADE
+//#define DO_DEBUG
+//#define IGNORE_CRC_CHECK
 
 unsigned char msg_lengths[0x10] = { 0, 1, 2, 3, 0, /*complicated*/0, 24, 1, 2, /* dummy */0, 0, 0, 0, 0, 0, 0 };
 
@@ -158,28 +160,87 @@ int main(void)
 	// turn on TXC interrupt
 	//UCSRB |= _BV(TXCIE);
 
-	for ( int i=0; i<16; i++ )
-	{
-		tlcClass_set( i,0 );
-	}
-	while ( tlcClass_update() )
-		;
+	DDRD |= _BV(PD6);
+	DDRB |= _BV(PB0);
+	PORTD &= ~_BV(PD6);
+	PORTB &= ~_BV(PB0);
+	
+	unsigned long int prev_millis = millis_counter;
 	while(1)
 	{
-		for ( int i=0; i<16; i++ )
+
+
+		// check for USART
+		//
+		if ( USART_IsDataWaiting() )
 		{
-			for ( int j=0; j<4096; j+= 128 )
+			// receive message head
+			unsigned char head0 = USART_Receive();
+			unsigned char head1 = USART_Receive();
+			if ( head0 != 0xAA || head1 != 0x55 )
 			{
-				tlcClass_set( i, 4095/*j*/ );
-				while( tlcClass_update() )
-						;
+				PORTB &= ~_BV(PB0);
 			}
-			tlcClass_set( i, 0 );
-			while( tlcClass_update() )
+			else
+			{
+				PORTB |= _BV(PB0);
+			}
+
+			// get command and board id
+			unsigned char command_and_id = USART_Receive();
+			PORTB &= ~_BV(PB0);
+			unsigned char which_levelhi, levello;
+			unsigned char latch = 1;
+			unsigned char dec;
+			unsigned char count;
+			unsigned char msg_buffer[24];
+			unsigned char crc;
+			int not_for_me = !(((command_and_id&0xf0)==0) || ((command_and_id&0xf0)==my_id) ); 
+			// RS485 protocol begins here
+			unsigned char cmd = (command_and_id&0x0f);
+			
+			// fetch bytes, do CRC check
+			crc = 0;
+			crc = CRC8( command_and_id, crc );
+			int length = msg_lengths[cmd];
+			// fetch  ,upaditng crc 
+			for ( int i=0; i<length; i++ )
+			{
+				msg_buffer[i] = USART_Receive();
+				crc = CRC8( msg_buffer[i], crc );
+			}
+			// fetch crc and check
+			if ( USART_Receive() != crc )
+			{
+				// turn off pin 
+				PORTD &= ~_BV(PD6);
+
+				static int num_crc_failures = 0;
+				num_crc_failures++;
+				if ( num_crc_failures >= 15 )
+					num_crc_failures = 0;
+				for (int i=0; i<15; i++ )
+				{
+					tlcClass_set( i, (i>num_crc_failures?4095:0) );
+				}
+				tlcClass_set( 15, 0 );
+				while (tlcClass_update() )
 					;
+			}
+			else
+			{
+				// turn on pin
+				PORTD |= _BV(PD6);
+
+				tlcClass_set( 15, 4095 );
+				while (tlcClass_update() )
+					;
+
+				PORTD &= ~_BV(PD6);
+			}
+
 		}
 	}
-
 }
 
 

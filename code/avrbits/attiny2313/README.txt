@@ -10,5 +10,5 @@ $ make program-rs485_protocol_dev
 
 3. Set address in EEPROM:
 
-$ ./burn_fuse 0x10
+$ ./burn_eeprom 0x10
 (or 0x20, 0x30, ... )

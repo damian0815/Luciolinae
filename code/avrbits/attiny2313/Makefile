@@ -24,6 +24,7 @@ all: 	begin gccversion \
 #program-digg: digg.hex
 program-test_size: test_size.hex
 program-test_rs485: test_rs485.hex
+program-test_rs485_errors: test_rs485_errors.hex
 program-rs485_protocol_dev: rs485_protocol_dev.hex
 program-test_leds: test_leds.hex
 

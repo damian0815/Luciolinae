@@ -159,6 +159,11 @@ int main(void)
 
 	// turn on TXC interrupt
 	//UCSRB |= _BV(TXCIE);
+	
+	// indicate CRC errors on PD6
+	DDRD |= _BV(PD6);
+	PORTD &= ~_BV(PD6);
+
 
 	unsigned long int prev_millis = millis_counter;
 	while(1)
@@ -201,6 +206,17 @@ int main(void)
 		//
 		if ( USART_IsDataWaiting() )
 		{
+			// check header
+			unsigned char head_check;
+			head_check = USART_Receive();
+			if ( head_check != 0xAA )
+				continue;
+			head_check = USART_Receive();
+			if ( head_check != 0x55 )
+				continue;
+
+			PORTD &= ~_BV(PD6);
+
 			// get command and board id
 			unsigned char command_and_id = USART_Receive();
 			unsigned char which_levelhi, levello;
@@ -240,6 +256,7 @@ int main(void)
 			// fetch crc and check
 			if ( USART_Receive() != crc )
 			{
+				PORTD |= _BV(PD6);
 #ifdef DO_DEBUG
 				tlcClass_set( 0, 0 );
 				while (tlcClass_update() )
