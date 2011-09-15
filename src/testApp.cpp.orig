@@ -30,7 +30,7 @@ void testApp::setup(){
 	ofSetFrameRate( 60 ); 
 #endif
 	
-	ofSetLogLevel( OF_LOG_NOTICE );
+	ofSetLogLevel( OF_LOG_VERBOSE );
 	
 	serial.enumerateDevices();
 #ifdef TARGET_LINUX
@@ -95,7 +95,11 @@ void testApp::setup(){
 	//pd.addOpenFile( "pd-test.pd" );
 	pd.addOpenFile( "pdstuff/_main.pd" );
 	pd.start();
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> origin/master
 	ofSoundStreamSetup(2, 0, this, 44100, 256, 4 );
 #endif
 	
@@ -140,8 +144,12 @@ void testApp::update(){
 		m.addFloatArg( vol );
 		osc.sendMessage(m);
 	}
+<<<<<<< HEAD
+	else if ( ofGetElapsedTimeMillis() > ontime_ms )
+=======
 	else if ( ontime_ms > 0 && ofGetElapsedTimeMillis() > ontime_ms )
-{
+>>>>>>> origin/master
+	{
 		// calculate a volume
 		float vol = float(ofGetElapsedTimeMillis()-ontime_ms)/FADE_TIME;
 		vol = min(1.0f,max(0.0f, vol));
@@ -266,5 +274,9 @@ void testApp::windowResized(int w, int h){
 void testApp::audioRequested( float* input, int bufferSize, int nChannels )
 {
 	pd.renderAudio( input, bufferSize, nChannels );
+<<<<<<< HEAD
+	//memset( input, 0, sizeof( input ) );
+=======
+>>>>>>> origin/master
 		
 }
