@@ -8,7 +8,7 @@
  */
 
 #include "Breathing.h"
-#include "Osc.h"
+#include "testApp.h"
 #include "SharedData.h"
 #include "Util.h"
 
@@ -74,17 +74,16 @@ void Breathing::update( float elapsed )
 	speed = speed*(1-elapsed) + target_speed*elapsed;
 	lung_fullness += speed*elapsed;*/
 	
-	ofxOscMessage m;
-	m.setAddress( "/breath" );
-	if ( speed > 0 )
-		m.addFloatArg( 1 );
-	else
-		m.addFloatArg( 0 );
-	m.addFloatArg( lung_fullness );
 	speed_smoothed = speed_smoothed * 0.75f + speed * 0.25f;
-	m.addFloatArg( speed_smoothed );
-	m.addFloatArg( speed*elapsed );
-	Osc::getInstance()->sendMessage( m );
+
+	ofxPd* pd = &((testApp*)ofGetAppPtr())->pd;
+	
+	pd->startMessage( "oscy", "/breath" );
+	pd->addFloat( (speed>0)?1.0f:0.0f );
+	pd->addFloat( lung_fullness );
+	pd->addFloat( speed_smoothed );
+	pd->addFloat( speed*elapsed );
+	pd->finish();
 	
 	SharedData::setFloat("breath", lung_fullness );
 	

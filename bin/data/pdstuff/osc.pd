@@ -1,17 +1,22 @@
-#N canvas 696 162 459 356 10;
+#N canvas 348 401 459 356 10;
 #X obj 26 68 unpackOSC;
 #X obj 26 192 s osc_blip;
 #X obj 26 20 udpreceive 10001;
-#X obj 85 225 s osc_delaunay;
-#X obj 144 191 s osc_breath;
-#X obj 223 213 s osc_chunks;
+#X obj 48 253 s osc_delaunay;
+#X obj 124 195 s osc_breath;
+#X obj 211 247 s osc_chunks;
 #X obj 268 194 s osc_blip_all;
 #X obj 367 196 s osc_seq;
 #X obj 26 153 routeOSC /blip /delaunay /breath /chunks /blip_all /seq
 /volume;
 #X obj 344 233 s osc_volume;
+#X obj 41 110 r oscy;
+#X obj 119 45 print udpreceive-status;
+#X obj 331 21 loadbang;
+#X obj 333 54 print hello-osc;
 #X connect 0 0 8 0;
 #X connect 2 0 0 0;
+#X connect 2 1 11 0;
 #X connect 8 0 1 0;
 #X connect 8 1 3 0;
 #X connect 8 2 4 0;
@@ -19,3 +24,5 @@
 #X connect 8 4 6 0;
 #X connect 8 5 7 0;
 #X connect 8 6 9 0;
+#X connect 10 0 8 0;
+#X connect 12 0 13 0;

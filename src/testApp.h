@@ -10,6 +10,7 @@
 #include "DelaunayPulse.h"
 #include "Osc.h"
 #include "Breathing.h"
+#include "PdListener.h"
 
 #include "ofxPd.h"
 
@@ -37,6 +38,7 @@ public:
 	void windowResized(int w, int h);
 	
 	
+	
 	ofSerial	serial;
 	BufferedSerial* buffered_serial;
 		
@@ -49,6 +51,9 @@ public:
 	Breathing breath;
 	
 	Osc osc;
+	
+	
+	PdListener pd_listener;
 	
 	
 	// sound

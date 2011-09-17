@@ -11,6 +11,14 @@
 
 #define DO_PD
 
+#ifdef DO_PD
+extern "C" { 
+	void udpreceive_setup(void); 
+	void routeOSC_setup(void);
+	void unpackOSC_setup(void);
+}
+#endif
+
 //--------------------------------------------------------------
 void testApp::setup(){	 
 
@@ -36,10 +44,10 @@ void testApp::setup(){
 #ifdef TARGET_LINUX
 	static const char* SERIAL_PORT = "/dev/ttyUSB0";
 #elif defined TARGET_OSX
-	static const char* SERIAL_PORT = "/dev/tty.usbserial-FTT8R2AA";
+	//static const char* SERIAL_PORT = "/dev/tty.usbserial-FTT8R2AA";
 	//static const char* SERIAL_PORT = "/dev/tty.usbserial-0000103D";
 	//static const char* SERIAL_PORT = "/dev/tty.usbserial-A4000R0L";
-	//static const char* SERIAL_PORT	 = "/dev/tty.usbserial-FTTEIQQY";
+	static const char* SERIAL_PORT	 = "/dev/tty.usbserial-FTTEIQQY";
 #endif
 	static const int BAUDRATE = 19200;
 	if ( serial.setup(SERIAL_PORT, BAUDRATE ) )
@@ -92,21 +100,37 @@ void testApp::setup(){
 #ifdef DO_PD
 	printf("starting pd...\n");
 	
-	pd.setup( "" );
+	pd.init( 2, 2, 44100 );
+	pd.addListener( pd_listener );
+	
+	// setup externals
+	udpreceive_setup();
+	routeOSC_setup();
+	unpackOSC_setup();
+	
 	//pd.addOpenFile( "pd-test.pd" );
-	pd.addOpenFile( "pdstuff/_main.pd" );
-	pd.start();
+	pd.openPatch( "pdstuff/_main.pd" );
+	//pd.openPatch( "pd-test.pd");
 
-	ofSoundStreamSetup(2, 0, this, 44100, 256, 4 );
+	ofSoundStreamSetup(2, 0, this, 44100, pd.getBlockSize(), 6 );
 #endif
 	
-	ofSoundStreamSetup(2, 0, this, 44100, 256, 12 );
+	//ofSoundStreamSetup(2, 0, this, 44100, 256, 12 );
 	printf("testApp::setup() finished\n");
 	
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+	
+	static bool pd_dsp_on = false;
+	if ( !pd_dsp_on && ofGetElapsedTimef() > 1.000f )
+	{
+		printf("turning dsp on\n");
+		pd.dspOn();
+		pd_dsp_on = true;
+	}
+	
 	buffered_serial->update( ofGetLastFrameTime() );
 	breath.update( ofGetLastFrameTime() );
 	
@@ -136,10 +160,9 @@ void testApp::update(){
 		float vol = float(ofGetElapsedTimeMillis()-STARTUP_DELAY)/FADE_TIME;
 		vol = max(0.0f, vol);
 		// send volume
-		ofxOscMessage m;
-		m.setAddress("/volume");
-		m.addFloatArg( vol );
-		osc.sendMessage(m);
+		pd.startMessage("oscy", "/volume");
+		pd.addFloat( vol );
+		pd.finish();
 	}
 	else if ( ontime_ms > 0 && ofGetElapsedTimeMillis() > ontime_ms )
 {
@@ -148,10 +171,9 @@ void testApp::update(){
 		vol = min(1.0f,max(0.0f, vol));
 		vol = 1.0f-vol;
 		// send volume
-		ofxOscMessage m;
-		m.setAddress("/volume");
-		m.addFloatArg( vol );
-		osc.sendMessage(m);
+		pd.startMessage("oscy", "/volume");
+		pd.addFloat( vol );
+		pd.finish();
 		
 		if ( ontime_ms >0 && (ofGetElapsedTimeMillis() > (ontime_ms+FADE_TIME)) )
 		{
@@ -175,7 +197,7 @@ void testApp::draw(){
 
 void testApp::exit()
 {
-	pd.stop();
+	pd.clear();
 	printf("clearing lights\n");
 	lights.clear( true );
 	buffered_serial->shutdown();
@@ -266,6 +288,6 @@ void testApp::windowResized(int w, int h){
 
 void testApp::audioRequested( float* input, int bufferSize, int nChannels )
 {
-	pd.renderAudio( input, bufferSize, nChannels );
+	pd.audioOut( input, bufferSize, nChannels );
 		
 }

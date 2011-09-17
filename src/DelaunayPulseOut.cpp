@@ -12,7 +12,7 @@
 #include "Lights.h"
 #include "LightsDelaunay.h"
 #include "ofxVectorMath.h"
-#include "Osc.h"
+#include "testApp.h"
 
 
 void DelaunayPulseOut::start( int which_source, float brightness, float _falloff, float _speed )
@@ -73,14 +73,14 @@ void DelaunayPulseOut::update( float elapsed )
 	// send pings
 	for ( int i=0; i<pings.size(); i++ )
 	{
-		ofxOscMessage m;
-		m.setAddress( "/delaunay/ping" );
-		m.addFloatArg( pings[i].second );
+		ofxPd* pd = &((testApp*)ofGetAppPtr())->pd;
+		pd->startMessage("oscy", "/delaunay/ping");
+		pd->addFloat( pings[i].second );
 		const Light& light = lights->getLight( pings[i].first );
-		m.addFloatArg( light.getX() );
-		m.addFloatArg( light.getY() );
-		m.addFloatArg( delaunay->getId() );
-		Osc::getInstance()->sendMessage( m );
+		pd->addFloat( light.getX() );
+		pd->addFloat( light.getY() );
+		pd->addFloat( delaunay->getId() );
+		pd->finish();
 	}
 }
 
