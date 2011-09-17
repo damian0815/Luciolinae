@@ -1,0 +1,18 @@
+Week 1:
+-------
+Apr  8: Arrive + introduction
+Apr  9: Prototype + design PCB
+Apr 10:   ""
+Apr 11: Make PCBs
+Apr 12: Construct devices, test
+Apr 13:   ""
+Apr 14: break
+
+Week 2:
+-------
+Apr 15: Black out development space, prototype communication
+Apr 16: Prototype communication with multiple devices
+Apr 17:   ""
+Apr 18:   ""
+Apr 19: Install in exhibition space
+Apr 20:   ""

@@ -1,0 +1,3 @@
+Luciolinae consists of 2 or more small electronic audiovisual devices, suspended at body height in a room that has been made completely dark. Each device operates independently, and is equipped with a light sensor, microphone, loudspeaker, light source, and control electronics (eg microcontroller).
+
+The devices have two phases: listening, where they receive input from the light sensor and microphone and store it in some way, and transmitting, where they take the received input and use it to generate some output for the speaker and light. Multiple devices sharing this two-way communication pattern creates a feedback loop. The exact relation between input and output will be determined during the experimental development of the piece. 

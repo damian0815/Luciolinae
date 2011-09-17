@@ -1,0 +1,20 @@
+Electronics equipment
+. soldering iron
+. solder
+. broadboards
+. lab bench power supply
+. AVR microcontroller bootloader
+
+Electronic components, per device:
+. microcontroller
+. microphone
+. speaker
+. light sensor
+. light
+. support components (resistors, capacitors, transistors, hook-up wire)
+
+Exhibition
+. blackout materials: blackout cloth, black trash sacks, cardboard, ...
+. gaffer tape
+. power supply (15V 2A+)
+. help with suspending devices from the ceiling!

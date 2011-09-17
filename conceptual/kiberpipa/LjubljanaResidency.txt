@@ -1,0 +1,64 @@
+Luciolinae
+==========
+
+by Damian Stewart
+
+Concept
+-------
+
+Luciolinae transforms a blacked-out chamber into a liminal space where patterns of light and sound merge and transcend their pure physical qualities, becoming representations of consciousness and communication, intelligence and contemplation. Referencing Morse code, the Trans Atlantic Telegraph Cable, coded pulses of light transmitting digital data on fibre optic cables, and vast quantities of data or thoughts being analysed and processed just slightly beyond our awareness but near enough that the edges poke through, Luciolinae draws new experiences from the gap between perception and comprehension: we can see that /something/ is happening in front of us, but we lack the ability to understand, and within this confusion our minds become more open, allowing our experience to switch between the sacred and the profane.
+
+In Luciolinae, light and sound emitters are distributed throughout a darkened space, and emit patterned bursts of light and pulses of sound surrounded by periods of darkness and silence. The bursts seems to be a form of communication between the emitters: there are repeated arrangements detectable in the light, and the sounds show wandering harmonic relationships with each other. It is as if the emitters are holding conversations and arguments, sharing ideas and emotions; to a person standing in the space, it feels as though one is witnessing communication between living beings. 
+
+Kiberpipa residency proposal
+----------------------------
+
+I propose to do the following:
+. Assemble the hardware and create the software necessary to realise Luciolinae as proposed in the Concept. Use open-source tools and libraries wherever possible.
+. As it evolves, make the software framework available as an open source project.
+. Produce a weekly prototype, and open it up to the public for several hours one night every week during the residency.
+. Document each weekly prototype with a video to be released on YouTube/Vimeo, and on the website at http://luciolinae.frey.co.nz
+
+
+Timeline
+--------
+(based on a 12 week residency)
+
+Weeks 1-2: Develop a basic technical framework for Luciolinae.
+   a. Construct prototype emitters (light-only, with sound produced using external speakers).
+   b. Setup laptop-based control system: sound environment, light pattern programming environment, A-Life software simulation.
+   c. Black out the prototype space.
+   d. Setup documentation hosting at http://luciolinae.frey.co.nz, using blog-like software with Vimeo/YouTube links etc.
+
+Weeks 3-10: Create a bi-weekly series of drafts.
+   a. 1 fully-developed performance prototype completed every second week, light + sound.
+   b. Video and text documentation of prototype: video of the draft, discussion text proposing developments/improvements, and comments by the artist.
+   c. Small informal public exhibition of the prototype for a couple of hours one night, in order to gauge audience response and guide further development.
+
+Weeks 11-12: Produce a final piece for exhibition.
+   a. Tidy up presentation of prototype emitters or rebuild if necessary. Make rugged and exhibitable.
+   b. Black out the exhibition space.
+   c. Reconstruct installation in the exhibition space.
+ 
+
+
+Budget
+------
+
+for each emitter:
+
+6x BlinkM MaxM
+Arduino with bluetooth
+Cabling					50 eur
+Containment box
+
+for support:
+
+Power supply (12V, 40W - Laptop type) 	50 eur
+Computer
+
+for documentation:
+
+Low-light video equipment
+
+

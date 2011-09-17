@@ -1,0 +1,268 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXFileReference section */
+		2DD5EB0C116F63B9006DB8C3 /* tlc5940.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc5940.h; sourceTree = "<group>"; };
+		2DD5EB0D116F63B9006DB8C3 /* tlc5940.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tlc5940.c; sourceTree = "<group>"; };
+		2DD5EB2C116F6465006DB8C3 /* changelog.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = changelog.txt; sourceTree = "<group>"; };
+		2DD5EB2D116F6465006DB8C3 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		2DD5EB30116F6465006DB8C3 /* ani_arduino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ani_arduino.h; sourceTree = "<group>"; };
+		2DD5EB31116F6465006DB8C3 /* AnimationCreator.class */ = {isa = PBXFileReference; lastKnownFileType = compiled.javaclass; path = AnimationCreator.class; sourceTree = "<group>"; };
+		2DD5EB32116F6465006DB8C3 /* AnimationCreator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = AnimationCreator.java; sourceTree = "<group>"; };
+		2DD5EB33116F6465006DB8C3 /* Arduino.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Arduino.png; sourceTree = "<group>"; };
+		2DD5EB34116F6465006DB8C3 /* BasicAnimations.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BasicAnimations.pde; sourceTree = "<group>"; };
+		2DD5EB36116F6465006DB8C3 /* BasicUse.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BasicUse.pde; sourceTree = "<group>"; };
+		2DD5EB38116F6465006DB8C3 /* CircularLightBuffer.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CircularLightBuffer.pde; sourceTree = "<group>"; };
+		2DD5EB3A116F6465006DB8C3 /* Fades.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Fades.pde; sourceTree = "<group>"; };
+		2DD5EB3C116F6465006DB8C3 /* FadeScope.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FadeScope.pde; sourceTree = "<group>"; };
+		2DD5EB3E116F6465006DB8C3 /* Servos.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Servos.pde; sourceTree = "<group>"; };
+		2DD5EB40116F6465006DB8C3 /* UsingProgmem.pde */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UsingProgmem.pde; sourceTree = "<group>"; };
+		2DD5EB41116F6465006DB8C3 /* gpl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gpl.txt; sourceTree = "<group>"; };
+		2DD5EB42116F6465006DB8C3 /* keywords.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = keywords.txt; sourceTree = "<group>"; };
+		2DD5EB44116F6465006DB8C3 /* Arduino_Mega.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arduino_Mega.h; sourceTree = "<group>"; };
+		2DD5EB45116F6465006DB8C3 /* ATmega_8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATmega_8.h; sourceTree = "<group>"; };
+		2DD5EB46116F6465006DB8C3 /* ATmega_xx4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATmega_xx4.h; sourceTree = "<group>"; };
+		2DD5EB47116F6465006DB8C3 /* ATmega_xx8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATmega_xx8.h; sourceTree = "<group>"; };
+		2DD5EB48116F6465006DB8C3 /* chip_includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chip_includes.h; sourceTree = "<group>"; };
+		2DD5EB49116F6465006DB8C3 /* Tlc5940.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tlc5940.cpp; sourceTree = "<group>"; };
+		2DD5EB4A116F6465006DB8C3 /* Tlc5940.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tlc5940.h; sourceTree = "<group>"; };
+		2DD5EB4B116F6465006DB8C3 /* tlc_animations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_animations.h; sourceTree = "<group>"; };
+		2DD5EB4C116F6465006DB8C3 /* tlc_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_config.h; sourceTree = "<group>"; };
+		2DD5EB4D116F6465006DB8C3 /* tlc_fades.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_fades.h; sourceTree = "<group>"; };
+		2DD5EB4E116F6465006DB8C3 /* tlc_progmem_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_progmem_utils.h; sourceTree = "<group>"; };
+		2DD5EB4F116F6465006DB8C3 /* tlc_servos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_servos.h; sourceTree = "<group>"; };
+		2DD5EB50116F6465006DB8C3 /* tlc_shifts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tlc_shifts.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tlc5940_smaller */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB2B116F6465006DB8C3 /* reference_arduino */,
+				2DD5EB0C116F63B9006DB8C3 /* tlc5940.h */,
+				2DD5EB0D116F63B9006DB8C3 /* tlc5940.c */,
+			);
+			name = tlc5940_smaller;
+			sourceTree = "<group>";
+		};
+		2DD5EB2B116F6465006DB8C3 /* reference_arduino */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB2C116F6465006DB8C3 /* changelog.txt */,
+				2DD5EB2D116F6465006DB8C3 /* Doxyfile */,
+				2DD5EB2E116F6465006DB8C3 /* examples */,
+				2DD5EB41116F6465006DB8C3 /* gpl.txt */,
+				2DD5EB42116F6465006DB8C3 /* keywords.txt */,
+				2DD5EB43116F6465006DB8C3 /* pinouts */,
+				2DD5EB49116F6465006DB8C3 /* Tlc5940.cpp */,
+				2DD5EB4A116F6465006DB8C3 /* Tlc5940.h */,
+				2DD5EB4B116F6465006DB8C3 /* tlc_animations.h */,
+				2DD5EB4C116F6465006DB8C3 /* tlc_config.h */,
+				2DD5EB4D116F6465006DB8C3 /* tlc_fades.h */,
+				2DD5EB4E116F6465006DB8C3 /* tlc_progmem_utils.h */,
+				2DD5EB4F116F6465006DB8C3 /* tlc_servos.h */,
+				2DD5EB50116F6465006DB8C3 /* tlc_shifts.h */,
+			);
+			name = reference_arduino;
+			path = ../arduino/Tlc5940;
+			sourceTree = SOURCE_ROOT;
+		};
+		2DD5EB2E116F6465006DB8C3 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB2F116F6465006DB8C3 /* BasicAnimations */,
+				2DD5EB35116F6465006DB8C3 /* BasicUse */,
+				2DD5EB37116F6465006DB8C3 /* CircularLightBuffer */,
+				2DD5EB39116F6465006DB8C3 /* Fades */,
+				2DD5EB3B116F6465006DB8C3 /* FadeScope */,
+				2DD5EB3D116F6465006DB8C3 /* Servos */,
+				2DD5EB3F116F6465006DB8C3 /* UsingProgmem */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
+		2DD5EB2F116F6465006DB8C3 /* BasicAnimations */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB30116F6465006DB8C3 /* ani_arduino.h */,
+				2DD5EB31116F6465006DB8C3 /* AnimationCreator.class */,
+				2DD5EB32116F6465006DB8C3 /* AnimationCreator.java */,
+				2DD5EB33116F6465006DB8C3 /* Arduino.png */,
+				2DD5EB34116F6465006DB8C3 /* BasicAnimations.pde */,
+			);
+			path = BasicAnimations;
+			sourceTree = "<group>";
+		};
+		2DD5EB35116F6465006DB8C3 /* BasicUse */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB36116F6465006DB8C3 /* BasicUse.pde */,
+			);
+			path = BasicUse;
+			sourceTree = "<group>";
+		};
+		2DD5EB37116F6465006DB8C3 /* CircularLightBuffer */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB38116F6465006DB8C3 /* CircularLightBuffer.pde */,
+			);
+			path = CircularLightBuffer;
+			sourceTree = "<group>";
+		};
+		2DD5EB39116F6465006DB8C3 /* Fades */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB3A116F6465006DB8C3 /* Fades.pde */,
+			);
+			path = Fades;
+			sourceTree = "<group>";
+		};
+		2DD5EB3B116F6465006DB8C3 /* FadeScope */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB3C116F6465006DB8C3 /* FadeScope.pde */,
+			);
+			path = FadeScope;
+			sourceTree = "<group>";
+		};
+		2DD5EB3D116F6465006DB8C3 /* Servos */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB3E116F6465006DB8C3 /* Servos.pde */,
+			);
+			path = Servos;
+			sourceTree = "<group>";
+		};
+		2DD5EB3F116F6465006DB8C3 /* UsingProgmem */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB40116F6465006DB8C3 /* UsingProgmem.pde */,
+			);
+			path = UsingProgmem;
+			sourceTree = "<group>";
+		};
+		2DD5EB43116F6465006DB8C3 /* pinouts */ = {
+			isa = PBXGroup;
+			children = (
+				2DD5EB44116F6465006DB8C3 /* Arduino_Mega.h */,
+				2DD5EB45116F6465006DB8C3 /* ATmega_8.h */,
+				2DD5EB46116F6465006DB8C3 /* ATmega_xx4.h */,
+				2DD5EB47116F6465006DB8C3 /* ATmega_xx8.h */,
+				2DD5EB48116F6465006DB8C3 /* chip_includes.h */,
+			);
+			path = pinouts;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		D28A88AD04BDD90700651E21 /* tlc5940_smaller */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "tlc5940_smaller" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = tlc5940_smaller;
+			passBuildSettingsInEnvironment = 1;
+			productName = tlc5940_smaller;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "tlc5940_smaller" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tlc5940_smaller */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D28A88AD04BDD90700651E21 /* tlc5940_smaller */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919008733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = tlc5940_smaller;
+			};
+			name = Debug;
+		};
+		1DEB919108733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = tlc5940_smaller;
+			};
+			name = Release;
+		};
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "tlc5940_smaller" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919008733D9F0010E9CD /* Debug */,
+				1DEB919108733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "tlc5940_smaller" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
