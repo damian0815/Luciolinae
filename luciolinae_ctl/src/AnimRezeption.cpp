@@ -8,6 +8,7 @@
 
 #include "AnimRezeption.h"
 #include "Osc.h"
+#include "ofxVectorMath.h"
 
 const char* AnimRezeption::NAME = "rezeption";
 
@@ -101,7 +102,7 @@ void AnimRezeption::updatePulse()
 		if ( counter >= 0 && counter < 3 )
 		{
 			float radius = 1.0f/6.0f;
-			ofVec2f pulse_pos[3] = { ofVec2f( radius, 1.0f/6.0f ), ofVec2f( radius, 3.0f/6.0f ), ofVec2f( radius, 5.0f/6.0f ) };
+			ofxVec2f pulse_pos[3] = { ofxVec2f( radius, 1.0f/6.0f ), ofxVec2f( radius, 3.0f/6.0f ), ofxVec2f( radius, 5.0f/6.0f ) };
 			lights->illuminateCircularArea( pulse_pos[counter].x, pulse_pos[counter].y, radius );
 			
 			ofxOscMessage m;

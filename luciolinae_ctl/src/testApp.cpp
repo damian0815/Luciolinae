@@ -10,7 +10,9 @@
 #include "AnimGazebo.h"
 #include "AnimRezeption.h"
 
-//#define DO_PD
+#ifdef TARGET_LINUX
+#define DO_PD
+#endif
 
 //--------------------------------------------------------------
 void testApp::setup(){	 
