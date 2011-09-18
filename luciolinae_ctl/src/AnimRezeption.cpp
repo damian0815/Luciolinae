@@ -51,7 +51,7 @@ void AnimRezeption::update( float elapsed )
 		{
 			case AR_SLEEP:
 				state = AR_IN;
-				timer = 5.0f;
+				timer = ofRandom( 4, 6 );
 				duration = timer;
 				break;
 			case AR_IN:
@@ -62,12 +62,12 @@ void AnimRezeption::update( float elapsed )
 			case AR_PULSE:
 				// go to out
 				state = AR_OUT;
-				timer = 5.0f;
+				timer = ofRandom( 4,6 );
 				duration = timer;
 				break;
 			case AR_OUT:
 				state = AR_SLEEP;
-				timer = 15.0f;
+				timer = ofRandom( 10, 30 );
 				break;
 			default:
 				break;
@@ -119,7 +119,7 @@ void AnimRezeption::updatePulse()
 		counter++;
 		// if we should go again
 		if ( counter < 4 )
-			timer = 1.0f;
+			timer = ofRandom(0.8f,1.2f);
 
 	}
 	
