@@ -1,0 +1,6 @@
+*.xcodeproj/*.mode?v?
+*.xcodeproj/*.pbxuser
+*.xcodeproj/xcuserdata
+build
+bin
+

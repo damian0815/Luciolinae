@@ -52,8 +52,8 @@ void testApp::setup(){
 	buffered_serial->setup( &serial, BAUDRATE );
 
 	// osc
-	//static const char* OSC_HOST = "localhost";
-	static const char* OSC_HOST = "192.168.1.5";
+	static const char* OSC_HOST = "localhost";
+	//static const char* OSC_HOST = "192.168.1.5";
 	static const int OSC_PORT = 10001;
 	osc.setup( OSC_HOST, OSC_PORT );
 	
