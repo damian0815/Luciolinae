@@ -8,8 +8,9 @@
 #include "StateAnimIdle.h"
 #include "AnimKapelica.h"
 #include "AnimGazebo.h"
+#include "AnimRezeption.h"
 
-#define DO_PD
+//#define DO_PD
 
 //--------------------------------------------------------------
 void testApp::setup(){	 
@@ -77,16 +78,19 @@ void testApp::setup(){
 
 	AnimationFactory::useLights( &lights );
     
+	anim_switcher.addAnim( AnimRezeption::NAME );
+	
     anim_switcher.addAnim( AnimSeq::NAME );
 
 	anim_switcher.addAnim( AnimGazebo::NAME );
-	anim_switcher.addAnim( AnimKapelica::NAME );
-	anim_switcher.addAnim( AnimStateMachine::NAME );
+	//anim_switcher.addAnim( AnimKapelica::NAME );
+	//anim_switcher.addAnim( AnimStateMachine::NAME );
 	anim_switcher.addAnim( AnimSweep::NAME );
-	anim_switcher.addAnim( AnimDelaunay::NAME );
+	//anim_switcher.addAnim( AnimDelaunay::NAME );
 	anim_switcher.addAnim( AnimPositionCalibrate::NAME );
-	anim_switcher.addAnim( AnimSeq::NAME );
-	anim_switcher.addAnim( AnimSeqSine::NAME );
+	//anim_switcher.addAnim( AnimSeq::NAME );
+	//anim_switcher.addAnim( AnimSeqSine::NAME );
+	
 
 	current_anim = anim_switcher.goToAnim( AnimSeq::NAME );
 	
@@ -95,13 +99,13 @@ void testApp::setup(){
 	
 	pd.setup( "" );
 	//pd.addOpenFile( "pd-test.pd" );
-	pd.addOpenFile( "pdstuff/_main.pd" );
+	//pd.addOpenFile( "pdstuff/_main.pd" );
+	pd.addOpenFile( "ll_rezeption/_main.pd" );
 	pd.start();
 
 	ofSoundStreamSetup(2, 0, this, 44100, 256, 4 );
 #endif
 	
-	ofSoundStreamSetup(2, 0, this, 44100, 256, 12 );
 	printf("testApp::setup() finished\n");
 	
 }
@@ -176,7 +180,9 @@ void testApp::draw(){
 
 void testApp::exit()
 {
+#ifdef DO_PD
 	pd.stop();
+#endif
 	printf("clearing lights\n");
 	lights.clear( true );
 	buffered_serial->shutdown();
@@ -267,6 +273,8 @@ void testApp::windowResized(int w, int h){
 
 void testApp::audioRequested( float* input, int bufferSize, int nChannels )
 {
+#ifdef DO_PD
 	pd.renderAudio( input, bufferSize, nChannels );
+#endif
 		
 }

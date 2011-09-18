@@ -19,6 +19,7 @@ public:
 	virtual void beginWrite() {};
 	virtual bool writeBytes( unsigned char* buffer, int count ) { return count; }
 	virtual void endWrite() {};
+	virtual void update( float elapsed ) {};
 
 private:
 	virtual bool writeBytes_real( unsigned char* buffer, int count ) { return true; }

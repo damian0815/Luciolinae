@@ -319,6 +319,14 @@ void Lights::pulse( int id, float bright, bool include_big, float end_bright )
 	}
 }
 
+void Lights::setPulseDecayFactor( float factor )
+{
+	for ( int i=0; i<lights.size(); i++ )
+	{
+		lights[i].setDecayFactor( factor );
+	}
+}
+
 void Lights::set( int id, float bright, bool include_big )
 {
 	if ( lights[id].isBig() && !include_big )
@@ -408,16 +416,16 @@ void Lights::draw()
 	}
 }
 
-void Lights::illuminateCircularArea( float x, float y, float area, bool include_big )
+void Lights::illuminateCircularArea( float x, float y, float radius, bool include_big )
 {
 	for ( int i=0; i<lights.size(); i++ )
 	{
 		
 		float dx = lights[i].getX()-x;
 		float dy = lights[i].getY()-y;
-		if ( dx*dx+dy*dy <= area*area )
+		if ( dx*dx+dy*dy <= radius*radius )
 		{
-			float brightness = 1.0f-(dx*dx+dy*dy)/(area*area);
+			float brightness = 1.0f-(dx*dx+dy*dy)/(radius*radius);
 			pulse( i, brightness, 0, include_big );
 		}
 	}
@@ -479,10 +487,10 @@ void Lights::illuminateCorridor( float x, float y, float dx, float dy, float pow
 				brightness = (1.0f-distance/width);
 			else
 				brightness = 1;
-			set( i, power*brightness*brightness, include_big );
+			pulse( i, power*brightness*brightness, 0, include_big );
 		}			
-		else
-			set( i, 0, include_big );
+		/*else
+			set( i, 0, include_big );*/
 	}
 }
 void Lights::drawIlluminateCorridor( float x, float y, float dx, float dy, float power, float width )

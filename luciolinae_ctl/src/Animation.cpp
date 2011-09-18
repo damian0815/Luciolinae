@@ -28,6 +28,7 @@
 #include "StateAnimSeq.h"
 #include "AnimKapelica.h"
 #include "AnimGazebo.h"
+#include "AnimRezeption.h"
 
 
 
@@ -87,6 +88,9 @@ Animation* AnimationFactory::makeAnimation( string name )
 
 		else if ( name == StateAnimSeq::NAME )
 			cache[name] = new StateAnimSeq( lights );
+		
+		else if ( name == AnimRezeption::NAME )
+			cache[name] = new AnimRezeption( lights );
 
 		/*
 		else if ( name == StateAnimIdle::NAME )

@@ -25,7 +25,7 @@ public:
 	virtual bool writeBytes( unsigned char* buffer, int count );
 	virtual void endWrite();
 	
-	void update( float elapsed );
+	virtual void update( float elapsed );
 	
 	
 protected:

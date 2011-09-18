@@ -32,6 +32,8 @@ public:
 	void save( ofxXmlSettings& data );
 
 	void update( float elapsed );
+	
+	void setPulseDecayFactor( float decay_factor );
 
 	void draw();
 
@@ -44,7 +46,7 @@ public:
 	void clear( bool pummel=false );
 	
 	// illuminate in this area
-	void illuminateCircularArea( float x, float y, float area, bool include_big=false );
+	void illuminateCircularArea( float x, float y, float radius, bool include_big=false );
 	// illuminate a line of area. (x,y) is a point on the line, (dx,dy) is a direction vector
 	// and width is the illumination width of the line
 	void illuminateCorridor( float x, float y, float dx, float dy, float power, float width, bool include_big=false );
