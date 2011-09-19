@@ -180,7 +180,7 @@ void AnimRezeption::updateOut()
 		float search_x = ofRandom( 0, offset );
 		for ( int i=0; i<lights->getNumLights(); i++ )
 		{
-			int which = ofRandom(lights->getNumLights()*0.999f);
+			int which = ofRandom(0, lights->getNumLights()*0.999f);
 			const Light& l = lights->getLight(which);
 			if ( fabsf(l.getX() - search_x) < offset*0.3f )
 			{
