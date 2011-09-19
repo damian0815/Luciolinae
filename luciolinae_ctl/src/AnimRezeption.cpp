@@ -124,6 +124,11 @@ void AnimRezeption::updatePulse()
 		}
 		else
 		{
+			// needed to pass on the chord
+			ofxOscMessage m;
+			m.setAddress( "/modal-pings/single" );
+			m.addFloatArg( 0 );
+			Osc::getInstance()->sendMessage( m );
 			/*ofxOscMessage m;
 			m.setAddress( "/modal-pings/chord" );
 			Osc::getInstance()->sendMessage( m );*/

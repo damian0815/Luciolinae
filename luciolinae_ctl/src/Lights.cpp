@@ -489,10 +489,13 @@ void Lights::illuminateCorridor( float x, float y, float dx, float dy, float pow
 				brightness = (1.0f-distance/width);
 			else
 				brightness = 1;
-			pulse( i, power*brightness*brightness, 0, include_big );
+			pulse( i, power*brightness*brightness, include_big, 0 );
+			//set( i, power*brightness*brightness, include_big );
 		}			
-		/*else
-			set( i, 0, include_big );*/
+		/*
+		else
+			set( i, 0, include_big );
+		 */
 	}
 }
 void Lights::drawIlluminateCorridor( float x, float y, float dx, float dy, float power, float width )
