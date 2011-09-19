@@ -135,7 +135,8 @@ void testApp::update(){
 	
 	
 	static const int FADE_TIME = 1000;
-	static const int STARTUP_DELAY = 100;
+	static const int STARTUP_DELAY = 1000;
+	static bool set_vol_1_sent = false;
 	// fade up
 	if ( ofGetElapsedTimeMillis()-STARTUP_DELAY < FADE_TIME )
 	{
@@ -149,7 +150,7 @@ void testApp::update(){
 		osc.sendMessage(m);
 	}
 	else if ( ontime_ms > 0 && ofGetElapsedTimeMillis() > ontime_ms )
-{
+	{
 		// calculate a volume
 		float vol = float(ofGetElapsedTimeMillis()-ontime_ms)/FADE_TIME;
 		vol = min(1.0f,max(0.0f, vol));
@@ -165,6 +166,16 @@ void testApp::update(){
 			printf("quit time\n");
 			::exit(0);
 		}
+	}
+	else if ( ofGetElapsedTimeMillis()-STARTUP_DELAY >= FADE_TIME && !set_vol_1_sent )
+	{	
+		// send volume
+		ofxOscMessage m;
+		m.setAddress("/volume");
+		m.addFloatArg( 1.0f );
+		osc.sendMessage(m);
+		set_vol_1_sent = true;
+	
 	}
 
 	
