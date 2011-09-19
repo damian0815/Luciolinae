@@ -46,7 +46,7 @@ public:
 	void clear( bool pummel=false );
 	
 	// illuminate in this area
-	void illuminateCircularArea( float x, float y, float radius, bool include_big=false );
+	void illuminateCircularArea( float x, float y, float radius, bool include_big=false, float max_brightness=1.0f );
 	// illuminate a line of area. (x,y) is a point on the line, (dx,dy) is a direction vector
 	// and width is the illumination width of the line
 	void illuminateCorridor( float x, float y, float dx, float dy, float power, float width, bool include_big=false );

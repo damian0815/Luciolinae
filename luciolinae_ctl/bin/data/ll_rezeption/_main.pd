@@ -1,5 +1,5 @@
-#N canvas 792 511 484 383 10;
+#N canvas 882 495 484 383 10;
 #X obj 22 35 osc;
 #X obj 24 173 sound;
-#X obj 74 103 delaunay;
-#X obj 151 103 modal-pings;
+#X obj 199 98 modal-pings;
+#X obj 74 103 sprinkles-pitched;

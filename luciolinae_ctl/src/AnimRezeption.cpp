@@ -18,6 +18,7 @@ AnimRezeption::AnimRezeption( Lights* _lights )
 	state = AR_SLEEP;
 	timer = 0.0f; // will immediately switch to IN state on first update
 	counter = 0;
+	random_saved = 1.0f;
 }
 
 void AnimRezeption::update( float elapsed )
@@ -35,6 +36,7 @@ void AnimRezeption::update( float elapsed )
 			break;
 			
 		case AR_OUT: 
+			sprinkle_timer -= elapsed;
 			updateOut();
 			break;
 			
@@ -52,7 +54,7 @@ void AnimRezeption::update( float elapsed )
 		{
 			case AR_SLEEP:
 				state = AR_IN;
-				timer = ofRandom( 4, 6 );
+				timer = ofRandom( 5, 20 );
 				duration = timer;
 				break;
 			case AR_IN:
@@ -63,12 +65,14 @@ void AnimRezeption::update( float elapsed )
 			case AR_PULSE:
 				// go to out
 				state = AR_OUT;
-				timer = ofRandom( 4,6 );
+				timer = ofRandom( 5,20 );
 				duration = timer;
+				sprinkle_timer = 0.0f;
 				break;
 			case AR_OUT:
 				state = AR_SLEEP;
-				timer = ofRandom( 10, 30 );
+				//timer = ofRandom( 10, 30 );
+				timer = ofRandom( 30, 45 );
 				break;
 			default:
 				break;
@@ -101,26 +105,48 @@ void AnimRezeption::updatePulse()
 	{
 		if ( counter >= 0 && counter < 3 )
 		{
+			if ( counter == 0 )
+			{
+				pulse_brightness = ofRandomuf();
+				pulse_brightness *= pulse_brightness;
+				pulse_brightness = 0.5f+pulse_brightness*0.5f;
+			}
+			
+			float brightness = pulse_brightness*ofRandom(0.8f,1.2f);
 			float radius = 1.0f/6.0f;
 			ofxVec2f pulse_pos[3] = { ofxVec2f( radius, 1.0f/6.0f ), ofxVec2f( radius, 3.0f/6.0f ), ofxVec2f( radius, 5.0f/6.0f ) };
-			lights->illuminateCircularArea( pulse_pos[counter].x, pulse_pos[counter].y, radius );
+			lights->illuminateCircularArea( pulse_pos[counter].x, pulse_pos[counter].y, radius, true, brightness );
 			
 			ofxOscMessage m;
 			m.setAddress( "/modal-pings/single" );
+			m.addFloatArg( brightness*brightness );
 			Osc::getInstance()->sendMessage( m );
 		}
 		else
 		{
-			ofxOscMessage m;
+			/*ofxOscMessage m;
 			m.setAddress( "/modal-pings/chord" );
-			Osc::getInstance()->sendMessage( m );
+			Osc::getInstance()->sendMessage( m );*/
 		}
 		
 		
 		counter++;
 		// if we should go again
+		if ( counter == 0 )
+		{
+			random_saved = ofRandomuf();
+			random_saved = random_saved*random_saved*3.0f + 1.0f;
+		}
 		if ( counter < 4 )
-			timer = ofRandom(0.8f,1.2f);
+			timer = random_saved;
+		
+/*		
+		// testing purposes: never leave this state
+		if ( counter >= 3 )
+		{
+			timer = random_saved;
+			counter = 0;
+		}*/
 
 	}
 	
@@ -140,6 +166,36 @@ void AnimRezeption::updateOut()
 	float dy = 1;
 	//printf("illuminating corridor: %f,%f  %f,%f\n", x, y, dx, dy );
 	lights->illuminateCorridor( x, y, dx, dy, 1.0f, 0.05f );
+	
+
+	// pulse a sprinkly
+	while ( sprinkle_timer < 0 )
+	{
+		bool found = false;
+		float search_x = ofRandom( 0, offset );
+		for ( int i=0; i<lights->getNumLights(); i++ )
+		{
+			int which = ofRandom(lights->getNumLights()*0.999f);
+			const Light& l = lights->getLight(which);
+			if ( fabsf(l.getX() - search_x) < offset*0.3f )
+			{
+				found = true;
+				float brightness = (1.0f-percent)*ofRandom( 0.5f, 1.0f);
+				lights->pulse( which, brightness );
+				ofxOscMessage m;
+				m.setAddress( "/sprinkles-pitched/ping" );
+				m.addFloatArg( l.getX()/offset );
+				m.addFloatArg( brightness*brightness );
+				Osc::getInstance()->sendMessage( m );
+			}
+			if ( found )
+				break;
+		}
+		float next_timer = ofRandomuf();
+		sprinkle_timer += next_timer*next_timer*0.2f + 0.05f;
+	}	
+	
+	
 
 }
 

@@ -134,8 +134,8 @@ void testApp::update(){
 	lights.flush();
 	
 	
-	static const int FADE_TIME = 10000;
-	static const int STARTUP_DELAY = 5000;
+	static const int FADE_TIME = 1000;
+	static const int STARTUP_DELAY = 100;
 	// fade up
 	if ( ofGetElapsedTimeMillis()-STARTUP_DELAY < FADE_TIME )
 	{

@@ -416,7 +416,7 @@ void Lights::draw()
 	}
 }
 
-void Lights::illuminateCircularArea( float x, float y, float radius, bool include_big )
+void Lights::illuminateCircularArea( float x, float y, float radius, bool include_big, float max_brightness )
 {
 	for ( int i=0; i<lights.size(); i++ )
 	{
@@ -426,7 +426,9 @@ void Lights::illuminateCircularArea( float x, float y, float radius, bool includ
 		if ( dx*dx+dy*dy <= radius*radius )
 		{
 			float brightness = 1.0f-(dx*dx+dy*dy)/(radius*radius);
-			pulse( i, brightness, 0, include_big );
+			brightness *= max_brightness;
+			brightness = min(1.0f,brightness);
+			pulse( i, brightness, include_big, 0 );
 		}
 	}
 }

@@ -8,16 +8,18 @@
 #X obj 268 194 s osc_blip_all;
 #X obj 367 196 s osc_seq;
 #X obj 344 233 s osc_volume;
-#X obj 26 153 routeOSC /blip /delaunay /breath /chunks /blip_all /seq
-/volume /modal-pings;
 #X obj 323 275 s osc_modal-pings;
-#X connect 0 0 9 0;
+#X obj 26 153 routeOSC /blip /delaunay /breath /chunks /blip_all /seq
+/volume /modal-pings /sprinkles-pitched;
+#X obj 138 306 s osc_sprinkles-pitched;
+#X connect 0 0 10 0;
 #X connect 2 0 0 0;
-#X connect 9 0 1 0;
-#X connect 9 1 3 0;
-#X connect 9 2 4 0;
-#X connect 9 3 5 0;
-#X connect 9 4 6 0;
-#X connect 9 5 7 0;
-#X connect 9 6 8 0;
-#X connect 9 7 10 0;
+#X connect 10 0 1 0;
+#X connect 10 1 3 0;
+#X connect 10 2 4 0;
+#X connect 10 3 5 0;
+#X connect 10 4 6 0;
+#X connect 10 5 7 0;
+#X connect 10 6 8 0;
+#X connect 10 7 9 0;
+#X connect 10 8 11 0;

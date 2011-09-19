@@ -40,6 +40,11 @@ protected:
 	float timer;
 	float duration;
 	float percent;
+	
+	float sprinkle_timer;
+	float random_saved;
+	float pulse_brightness;
+	
 	int counter;
 	
 };
